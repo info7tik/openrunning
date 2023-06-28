@@ -14,16 +14,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'runanalyst-web'`, () => {
+  it(`should have as title 'OpenRunning'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('runanalyst-web');
+    expect(app.title).toEqual('OpenRunning');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('runanalyst-web app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('OpenRunning app is running!');
   });
 });

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "runanalyst-web": {
+    "openrunning": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/runanalyst-web",
+            "outputPath": "dist/openrunning",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "runanalyst-web:build:production"
+              "browserTarget": "openrunning:build:production"
             },
             "development": {
-              "browserTarget": "runanalyst-web:build:development"
+              "browserTarget": "openrunning:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +71,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "runanalyst-web:build"
+            "browserTarget": "openrunning:build"
           }
         },
         "test": {
