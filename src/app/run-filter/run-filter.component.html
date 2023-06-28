@@ -11,11 +11,11 @@
         <input type="date" />
     </div>
     <div class="filter-settings">
-        <select [(ngModel)]="operator">
+        <select [(ngModel)]="operator" (ngModelChange)="updatePropertyTag()">
             <option value="no_filter" selected="selected">No filter</option>
             <option *ngFor="let filter of filterOperators" value="{{filter.value}}">{{filter.name}}</option>
         </select>
-        <select [(ngModel)]="property">
+        <select id="property-tag" [(ngModel)]="property" disabled>
             <option value="--" selected="selected">--</option>
             <option *ngFor="let val of filterProperties" value="{{val.value}}">{{val.name}}</option>
         </select>
@@ -31,4 +31,6 @@
         </div>
     </div>
     <button class="filter-button">Show my runs</button>
+    <br/>
+    <button class="filter-button">Import new runs</button>
 </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { IRun } from './run/IRun';
-import { IRunStats } from './stats/IRunStats';
+import { IRun } from './common/run/IRun';
+import { IRunStats } from './common/stats/IRunStats';
 
 @Injectable({
   providedIn: 'root'
