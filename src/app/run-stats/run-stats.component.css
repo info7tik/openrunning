@@ -1,0 +1,11 @@
+.run-stats {
+    margin: auto;
+    text-align: center;
+}
+
+.run-chart {
+    width: 600px;
+    height: 400px;
+    margin: auto;
+    display: block;
+}

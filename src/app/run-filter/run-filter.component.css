@@ -1,0 +1,27 @@
+.run-selection {
+    margin: auto;
+    text-align: center;
+}
+
+.date-settings {
+    margin-bottom: 10px;
+}
+
+.date-settings > * {
+    margin-right: 10px;
+}
+
+.filter-settings {
+    height: 60px;
+    text-align: center;
+    margin: auto;
+}
+
+.filter-settings > * {
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+.right-margin {
+    margin-right: 10px; 
+}

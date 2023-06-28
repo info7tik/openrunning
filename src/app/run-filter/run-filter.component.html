@@ -1,0 +1,34 @@
+<div class="run-selection">
+    <div class="date-settings">
+        <select>
+            <option>Daily</option>
+            <option>Weekly</option>
+            <option>Monthly</option>
+            <option>Yearly</option>
+        </select>
+
+        <label>From</label>
+        <input type="date" />
+    </div>
+    <div class="filter-settings">
+        <select [(ngModel)]="operator">
+            <option value="no_filter" selected="selected">No filter</option>
+            <option *ngFor="let filter of filterOperators" value="{{filter.value}}">{{filter.name}}</option>
+        </select>
+        <select [(ngModel)]="property">
+            <option value="--" selected="selected">--</option>
+            <option *ngFor="let val of filterProperties" value="{{val.value}}">{{val.name}}</option>
+        </select>
+
+        <div *ngIf="property === 'distance'" class="inline">
+            <span class="right-margin">Kilometer</span>
+            <input type="number" size=3 value="10" />
+        </div>
+
+        <div *ngIf="property === 'pace'" class="inline">
+            <input type="number" size=2 min=0 max=20 value="6" /> min
+            <input type="number" size=2 min=0 max=59 value="30" /> s
+        </div>
+    </div>
+    <button class="filter-button">Show my runs</button>
+</div>
