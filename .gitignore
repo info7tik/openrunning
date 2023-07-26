@@ -1,6 +1,9 @@
 frontend/.angular/
 frontend/node_modules
 
+backend/target/
+backend/upload-dir/
+
 # IDEs and editors
 .idea/
 .project
@@ -11,7 +14,7 @@ frontend/node_modules
 *.sublime-workspace
 
 # Visual Studio Code
-.vscode/*
+*/.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
