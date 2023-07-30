@@ -31,12 +31,6 @@
             <artifactId>mariadb-java-client</artifactId>
             <version>3.1.4</version>
         </dependency>
-        <!-- Basic authentication with user and password -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-            <version>3.1.1</version>
-        </dependency>
         <!-- annotations to create constructors, getters, setters, etc. -->
         <dependency>
             <groupId>org.projectlombok</groupId>

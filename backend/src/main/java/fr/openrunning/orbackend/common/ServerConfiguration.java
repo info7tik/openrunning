@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Configuration
 public class ServerConfiguration {
-    @Value("${openrunning.frontend.url}")
+    @Value("${frontend.url}")
     @Getter
     private String frontendUrl;
 }

@@ -1,0 +1,43 @@
+package fr.openrunning.orbackend.user.filter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import fr.openrunning.orbackend.common.exception.OpenRunningException;
+import fr.openrunning.orbackend.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Component
+public class TokenCheckerFilter implements HandlerInterceptor {
+    private static Logger logger = LoggerFactory.getLogger(TokenCheckerFilter.class);
+    @Autowired
+    private UserService service;
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws OpenRunningException {
+        logger.info("Checking the token for " + request.getRequestURI());
+        boolean isAuthenticated = false;
+        try {
+            String token = request.getHeader("Authorization");
+            if (token != null) {
+                String[] tokenValue = token.split(" ");
+                if (tokenValue.length == 2) {
+                    service.checkToken(tokenValue[1]);
+                    isAuthenticated = true;
+                }
+            }
+        } catch (Exception e) {
+            logger.error("error while checking the token", e);
+        }
+        if (!isAuthenticated) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        }
+        return isAuthenticated;
+    }
+}

@@ -14,6 +14,7 @@ import fr.openrunning.orbackend.common.ServerConfiguration;
 import fr.openrunning.orbackend.common.exception.OpenRunningException;
 import fr.openrunning.orbackend.common.json.JsonMessage;
 import fr.openrunning.orbackend.common.json.JsonResponse;
+import fr.openrunning.orbackend.user.json.JsonApiToken;
 import fr.openrunning.orbackend.user.json.JsonLoginInformation;
 
 @Controller
@@ -55,8 +56,10 @@ public class UserController {
     @PostMapping("/signin")
     public ResponseEntity<Object> signin(@RequestBody JsonLoginInformation loginInformation) {
         try {
-            service.signin(loginInformation);
-            JsonResponse response = new JsonResponse(frontendUrl, new JsonMessage("successful user signin"));
+            String token = service.signin(loginInformation);
+            JsonApiToken jsonToken = new JsonApiToken();
+            jsonToken.setToken(token);
+            JsonResponse response = new JsonResponse(frontendUrl, jsonToken);
             return response.buildSuccessResponse();
         } catch (OpenRunningException ore) {
             JsonResponse response = new JsonResponse(frontendUrl, ore);
