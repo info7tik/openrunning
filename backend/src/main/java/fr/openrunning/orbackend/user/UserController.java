@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import fr.openrunning.orbackend.common.ServerConfiguration;
 import fr.openrunning.orbackend.common.exception.OpenRunningException;
 import fr.openrunning.orbackend.common.json.JsonMessage;
 import fr.openrunning.orbackend.common.json.JsonResponse;
@@ -22,17 +21,15 @@ import fr.openrunning.orbackend.user.json.JsonLoginInformation;
 public class UserController {
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService service;
-    private final String frontendUrl;
 
     @Autowired
-    public UserController(UserService userService, ServerConfiguration serverConfiguration) {
+    public UserController(UserService userService) {
         this.service = userService;
-        this.frontendUrl = serverConfiguration.getFrontendUrl();
     }
 
     @GetMapping("/test")
     public ResponseEntity<Object> testing() {
-        JsonResponse response = new JsonResponse(frontendUrl, "That works!");
+        JsonResponse response = new JsonResponse("That works!");
         return response.buildSuccessResponse();
     }
 
@@ -40,15 +37,15 @@ public class UserController {
     public ResponseEntity<Object> signup(@RequestBody JsonLoginInformation loginInformation) {
         try {
             service.signup(loginInformation);
-            JsonResponse response = new JsonResponse(frontendUrl, new JsonMessage("successful user signup"));
+            JsonResponse response = new JsonResponse(new JsonMessage("successful user signup"));
             return response.buildSuccessResponse();
         } catch (OpenRunningException ore) {
-            JsonResponse response = new JsonResponse(frontendUrl, ore);
+            JsonResponse response = new JsonResponse(ore);
             return response.buildBadRequestResponse();
         } catch (Exception e) {
             String errorMessage = "signup failure with email '" + loginInformation.getEmail() + "'";
             logger.error(errorMessage, e);
-            JsonResponse response = new JsonResponse(frontendUrl, new JsonMessage(errorMessage));
+            JsonResponse response = new JsonResponse(new JsonMessage(errorMessage));
             return response.buildInternalErrorResponse();
         }
     }
@@ -59,15 +56,15 @@ public class UserController {
             String token = service.signin(loginInformation);
             JsonApiToken jsonToken = new JsonApiToken();
             jsonToken.setToken(token);
-            JsonResponse response = new JsonResponse(frontendUrl, jsonToken);
+            JsonResponse response = new JsonResponse(jsonToken);
             return response.buildSuccessResponse();
         } catch (OpenRunningException ore) {
-            JsonResponse response = new JsonResponse(frontendUrl, ore);
+            JsonResponse response = new JsonResponse(ore);
             return response.buildBadRequestResponse();
         } catch (Exception e) {
             String errorMessage = "signin failure with email '" + loginInformation.getEmail() + "'";
             logger.error(errorMessage, e);
-            JsonResponse response = new JsonResponse(frontendUrl, new JsonMessage(errorMessage));
+            JsonResponse response = new JsonResponse(new JsonMessage(errorMessage));
             return response.buildInternalErrorResponse();
         }
     }

@@ -6,22 +6,27 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.openrunning.orbackend.common.exception.OpenRunningException;
+import fr.openrunning.orbackend.storage.StorageService;
 import fr.openrunning.orbackend.user.json.JsonLoginInformation;
 import fr.openrunning.orbackend.user.model.User;
 
 @Service
 public class UserService {
-    private final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository repository;
     private final SecurityEncoder securityEncoder;
+    private final StorageService storageService;
     private Set<String> tokens = new HashSet<>();
 
-    public UserService(UserRepository userRepository, SecurityEncoder securityEncoder) {
+    @Autowired
+    public UserService(UserRepository userRepository, SecurityEncoder securityEncoder, StorageService storageService) {
         this.repository = userRepository;
         this.securityEncoder = securityEncoder;
+        this.storageService = storageService;
     }
 
     public void signup(JsonLoginInformation loginInformation) throws OpenRunningException {
@@ -32,6 +37,8 @@ public class UserService {
             String encodedPassword = securityEncoder.generateEncodedPassword(loginInformation.getPassword());
             newUser.setPassword(encodedPassword);
             repository.save(newUser);
+            storageService.createUserDirectory(loginInformation.getEmail());
+            logger.info("New account for user '" + loginInformation.getEmail() + "'");
         } else {
             String errorMessage = "signup failure: email '" + loginInformation.getEmail() + "' already exists";
             logger.error(errorMessage);
@@ -47,6 +54,7 @@ public class UserService {
         } else {
             String encodedPassword = securityEncoder.generateEncodedPassword(loginInformation.getPassword());
             if (existingUser.getPassword().equals(encodedPassword)) {
+                logger.info("Successful signin with the user '" + loginInformation.getEmail() + "'");
                 String token = securityEncoder.generateToken(loginInformation);
                 tokens.add(token);
                 return token;
