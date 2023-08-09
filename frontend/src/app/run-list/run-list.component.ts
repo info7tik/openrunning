@@ -45,6 +45,7 @@ export class RunListComponent {
 
     showPreviousRun(): void {
         if (this.showStartIndex > 0) {
+
             this.showStartIndex--;
             this.showEndIndex--;
             this.updateRunNbCounters();

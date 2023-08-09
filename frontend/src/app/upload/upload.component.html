@@ -1,0 +1,12 @@
+<div class="file-uploader">
+    <input #uploadFiles type="file" class="upload-input" (change)="onFileSelected($event)" multiple />
+    <button class="upload-button" (click)="uploadFiles.click()">Select GPX files</button>
+    <br />
+    <div *ngIf="files.length == 0" class="none-selected">No selected files</div>
+    <div *ngFor="let file of files" class="file-selected">
+        {{file.name}}
+    </div>
+    <button class="upload-button" (click)="uploadSelectedFiles()">Upload</button>
+    <br />
+    <a routerLink="/home">Back home</a>
+</div>
