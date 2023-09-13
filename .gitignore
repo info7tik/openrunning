@@ -1,7 +1,7 @@
 frontend/.angular/
 frontend/node_modules
 
-backend/target/
+**/target/
 backend/upload-dir/
 
 # IDEs and editors
