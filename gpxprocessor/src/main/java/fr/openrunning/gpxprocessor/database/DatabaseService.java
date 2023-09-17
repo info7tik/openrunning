@@ -9,6 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
+import fr.openrunning.gpxprocessor.generator.statistics.RecordStatistic;
 import fr.openrunning.model.DatabaseObject;
 import fr.openrunning.model.Record;
 import fr.openrunning.model.TimestampUserPrimaryKey;
@@ -23,8 +24,8 @@ public class DatabaseService {
     private final RecordsRepository recordsRepository;
 
     @Autowired
-    public DatabaseService(UserRepository userRepository, TracksRepository tracksRepository,
-            RecordsRepository recordsRepository) {
+    public DatabaseService(
+            UserRepository userRepository, TracksRepository tracksRepository, RecordsRepository recordsRepository) {
         this.userRepository = userRepository;
         this.tracksRepository = tracksRepository;
         this.recordsRepository = recordsRepository;
@@ -50,22 +51,43 @@ public class DatabaseService {
         }
     }
 
-    public void save(Record record) throws GpxProcessorException {
+    public Record save(int userId, RecordStatistic recordStats) throws GpxProcessorException {
         try {
-            save(recordsRepository, record);
+            Record recordDTO = convert(userId, recordStats);
+            save(recordsRepository, recordDTO);
+            return recordDTO;
         } catch (Exception e) {
             throw new GpxProcessorException("error while saving to database", e);
         }
     }
 
-    private <T extends DatabaseObject> void save(CrudRepository<T, TimestampUserPrimaryKey> repository, T track) {
-        if (exists(repository, track.getUserId(), track.getTimestamp())) {
-            logger.warn(
-                    "timestamp '" + track.getTimestamp() + "' already exists for user '" + track.getUserId()
-                            + "'. We delete it.");
-            delete(repository, track.getUserId(), track.getTimestamp());
+    private Record convert(int userId, RecordStatistic recordStats) throws GpxProcessorException {
+        if (recordStats.isAvailable()) {
+            long bestTimeForTarget = recordStats.getBestTimeInSeconds() * recordStats.getTargetInMeters()
+                    / recordStats.getBestDistanceInMeters();
+            Record recordDatabase = new Record();
+            recordDatabase.setTimestamp(recordStats.getFirstTimeInSeconds());
+            recordDatabase.setUserId(userId);
+            recordDatabase.setDistanceInMeters(recordStats.getTargetInMeters());
+            recordDatabase.setTimeInSeconds(bestTimeForTarget);
+            recordDatabase.setFirstPointIndex(recordStats.getBestStartIndex());
+            recordDatabase.setLastPointIndex(recordStats.getBestEndIndex());
+            return recordDatabase;
+        } else {
+            String error = "No record available for " + recordStats.getTargetInMeters() + " meters";
+            logger.error(error);
+            throw new GpxProcessorException(error);
         }
-        repository.save(track);
+    }
+
+    private <T extends DatabaseObject> void save(CrudRepository<T, TimestampUserPrimaryKey> repository,
+            T objectToSave) {
+        if (exists(repository, objectToSave.getUserId(), objectToSave.getTimestamp())) {
+            logger.warn("timestamp '" + objectToSave.getTimestamp() + "' already exists for user '"
+                    + objectToSave.getUserId() + "'. We delete it.");
+            delete(repository, objectToSave.getUserId(), objectToSave.getTimestamp());
+        }
+        repository.save(objectToSave);
     }
 
     private <T extends DatabaseObject> boolean exists(

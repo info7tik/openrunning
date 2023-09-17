@@ -11,33 +11,29 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import fr.openrunning.gpxprocessor.database.DatabaseSerializer;
 import fr.openrunning.gpxprocessor.database.DatabaseService;
-import fr.openrunning.gpxprocessor.generator.StatisticsGenerator;
+import fr.openrunning.gpxprocessor.generator.StatisticModuleManager;
 import fr.openrunning.gpxprocessor.generator.statistics.RecordStatistic;
 import fr.openrunning.gpxprocessor.gpxparser.GpxParser;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
-import fr.openrunning.model.Record;
 
 @Component
 public class CommandLineInterface implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(CommandLineInterface.class);
     private final CommandLineOptionManager optionManager;
-    private final StatisticsGenerator statisticsGenerator;
+    private final StatisticModuleManager moduleManager;
     private final DatabaseService databaseService;
-    private final DatabaseSerializer databaseSerializer;
 
     // TODO Use statistics to fill database with weekly, monthly, yearly data
     private List<File> gpxFiles;
     private List<GpxTrack> gpxTracks;
 
     @Autowired
-    public CommandLineInterface(CommandLineOptionManager optionManager, StatisticsGenerator generator,
-            DatabaseService service, DatabaseSerializer databaseSerializer) {
+    public CommandLineInterface(
+            CommandLineOptionManager optionManager, StatisticModuleManager moduleManager, DatabaseService service) {
         this.optionManager = optionManager;
-        this.statisticsGenerator = generator;
+        this.moduleManager = moduleManager;
         this.databaseService = service;
-        this.databaseSerializer = databaseSerializer;
         this.gpxFiles = new LinkedList<>();
         this.gpxTracks = new LinkedList<>();
     }
@@ -47,7 +43,7 @@ public class CommandLineInterface implements ApplicationRunner {
         try {
             logger.info("Starting the CLI...");
             optionManager.getEnabledStatisticModule(args)
-                    .forEach(moduleName -> statisticsGenerator.enabledStatisticModule(moduleName));
+                    .forEach(moduleName -> moduleManager.enabledStatisticModule(moduleName));
             this.gpxFiles = optionManager.getGpxFiles(args);
             parseGpxFiles();
             buildGpxTracks();
@@ -81,7 +77,7 @@ public class CommandLineInterface implements ApplicationRunner {
             logger.info("Statistics for " + track.getFilename());
             try {
                 logger.info(track.buildTrackInformation());
-                statisticsGenerator.generateStatistics(track);
+                moduleManager.generateStatistics(track);
             } catch (Exception e) {
                 logger.error("error while generating stats from '" + track.getName() + "'", e);
             }
@@ -96,15 +92,14 @@ public class CommandLineInterface implements ApplicationRunner {
                 logger.error("can not save data from " + gpxTrack.getFilename(), e);
             }
         });
-        statisticsGenerator.getStatistics().forEach((stats) -> {
+        moduleManager.getStatistics().forEach((stats) -> {
             String error = "error while saving '" + stats.getModuleName() + "' to the database";
             try {
                 switch (stats.getModuleName()) {
                     case PERIODIC:
                         break;
                     case RECORD:
-                        Record moduleResult = databaseSerializer.convert(userId, (RecordStatistic) stats);
-                        databaseService.save(moduleResult);
+                        databaseService.save(userId, (RecordStatistic) stats);
                         break;
                     default:
                         logger.error(error + ": unknown module");

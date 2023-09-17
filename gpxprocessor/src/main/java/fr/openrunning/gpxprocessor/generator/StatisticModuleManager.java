@@ -13,8 +13,8 @@ import fr.openrunning.gpxprocessor.track.GpxTrack;
 import lombok.Getter;
 
 @Component
-public class StatisticsGenerator {
-    private final Logger logger = LoggerFactory.getLogger(StatisticsGenerator.class);
+public class StatisticModuleManager {
+    private final Logger logger = LoggerFactory.getLogger(StatisticModuleManager.class);
     private List<StatisticModuleName> enabledModules = new LinkedList<>();
     @Getter
     private List<Statistics> statistics = new ArrayList<>();
