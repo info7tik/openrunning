@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
 import fr.openrunning.model.Track;
 import lombok.Getter;
 import lombok.Setter;
@@ -78,17 +79,6 @@ public class GpxTrack {
         return samples.indexOf(bestSample);
     }
 
-    public Track toTrack(int userId) {
-        Track newTrack = new Track();
-        newTrack.setUserId(userId);
-        newTrack.setTimestamp(getFirstTime());
-        newTrack.setDistanceInMeters(distanceInMeters);
-        newTrack.setTimeInSeconds(timeInSeconds);
-        newTrack.setName(name);
-        newTrack.setFilename(filename);
-        return newTrack;
-    }
-
     public String buildTrackInformation() {
         StringBuilder builder = new StringBuilder();
         builder.append("Name: " + name + "\n");
@@ -112,6 +102,17 @@ public class GpxTrack {
             builder.append(Utils.formatDistanceInMeters(totalDistance) + ": " + s.toString() + "\n");
         }
         return builder.toString();
+    }
+
+    public Track toDatabaseObject(int userId) throws GpxProcessorException {
+        Track newTrack = new Track();
+        newTrack.setUserId(userId);
+        newTrack.setTimestamp(getFirstTime());
+        newTrack.setDistanceInMeters(distanceInMeters);
+        newTrack.setTimeInSeconds(timeInSeconds);
+        newTrack.setName(name);
+        newTrack.setFilename(filename);
+        return newTrack;
     }
 
     @Override

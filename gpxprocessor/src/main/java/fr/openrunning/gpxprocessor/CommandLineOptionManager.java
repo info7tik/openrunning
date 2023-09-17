@@ -1,6 +1,7 @@
 package fr.openrunning.gpxprocessor;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,8 +13,7 @@ import org.springframework.stereotype.Component;
 
 import fr.openrunning.gpxprocessor.database.DatabaseService;
 import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
-import fr.openrunning.gpxprocessor.generator.StatisticsGenerator;
-import fr.openrunning.gpxprocessor.generator.statistics.Record;
+import fr.openrunning.gpxprocessor.generator.StatisticModuleName;
 
 @Component
 public class CommandLineOptionManager {
@@ -25,17 +25,21 @@ public class CommandLineOptionManager {
         this.databaseService = service;
     }
 
-    public void addStatistics(StatisticsGenerator generator, ApplicationArguments args) {
-        String statsOptionName = "stats";
-        if (args.containsOption(statsOptionName)) {
-            List<String> statisticsNames = args.getOptionValues(statsOptionName);
-            statisticsNames.forEach((statsName) -> {
-                logger.info("Statistics " + statsName + " added");
-                if (statsName.equals("records")) {
-                    generator.addStatistics(new Record(2000));
+    public List<StatisticModuleName> getEnabledStatisticModule(ApplicationArguments args) {
+        String moduleOptionName = "stats";
+        List<StatisticModuleName> moduleNames = new ArrayList<>();
+        if (args.containsOption(moduleOptionName)) {
+            List<String> moduleNamesFromArguments = args.getOptionValues(moduleOptionName);
+            moduleNamesFromArguments.forEach((moduleName) -> {
+                try {
+                    moduleNames.add(StatisticModuleName.valueOf(moduleName.toUpperCase()));
+                    logger.info("Statistics " + moduleName + " enabled");
+                } catch (Exception e) {
+                    logger.error("can not add the module '" + moduleName + "'", e);
                 }
             });
         }
+        return moduleNames;
     }
 
     public List<File> getGpxFiles(ApplicationArguments args) {
@@ -77,7 +81,7 @@ public class CommandLineOptionManager {
         }
     }
 
-    public boolean mustSaveToDatabase(ApplicationArguments args){
+    public boolean mustSaveToDatabase(ApplicationArguments args) {
         return args.containsOption("save");
     }
 }

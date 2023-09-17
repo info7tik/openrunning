@@ -4,58 +4,52 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.openrunning.gpxprocessor.generator.StatisticNoResult;
-import fr.openrunning.gpxprocessor.generator.StatisticResult;
-import fr.openrunning.gpxprocessor.generator.StatisticResultValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
+import fr.openrunning.gpxprocessor.generator.StatisticModuleName;
 import fr.openrunning.gpxprocessor.generator.Statistics;
 import fr.openrunning.gpxprocessor.track.GpxPoint;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 import fr.openrunning.gpxprocessor.track.Utils;
 import lombok.Getter;
 
-public class Record implements Statistics {
+public class RecordStatistic extends Statistics {
+    private final Logger logger = LoggerFactory.getLogger(RecordStatistic.class);
     private final int IMPROVE_PRECISION_MULTIPLIER = 1000000;
-    private final int targetInMeters;
+    @Getter
     private List<GpxPoint> gpxPoints = new ArrayList<>();
     private int startPointIndex = 0;
     private int endPointIndex = 0;
     private int distanceInMeters = 0;
     private long timeInSeconds = 0;
+    @Getter
     private int bestStartIndex = 0;
+    @Getter
     private int bestEndIndex = 0;
+    @Getter
+    private long firstTimeInSeconds = 0;
+    @Getter
+    private final int targetInMeters;
     @Getter
     private int bestDistanceInMeters = 0;
     @Getter
     private long bestTimeInSeconds = 0;
 
-    public Record(int targetInMeters) {
+    public RecordStatistic(int targetInMeters) {
+        super(StatisticModuleName.RECORD);
         this.targetInMeters = targetInMeters;
     }
 
     @Override
-    public StatisticResult getResult() {
-        if (bestDistanceInMeters < targetInMeters) {
-            return new StatisticNoResult();
-        } else {
-            long bestTimeForTarget = bestTimeInSeconds * targetInMeters / bestDistanceInMeters;
-            return new StatisticResultValue(targetInMeters, bestTimeForTarget, bestStartIndex, bestEndIndex);
+    public void compute(GpxTrack track) throws GpxProcessorException {
+        if (!gpxPoints.isEmpty()) {
+            logger.error("error while computing data with " + getModuleName()
+                    + ": the statistic can be computed only one time");
+            throw new GpxProcessorException("statistics can only be computed one time");
         }
-    }
-
-    public void initialize() {
-        gpxPoints.clear();
-        startPointIndex = 0;
-        endPointIndex = 0;
-        distanceInMeters = 0;
-        timeInSeconds = 0;
-        bestStartIndex = 0;
-        bestEndIndex = 0;
-        bestDistanceInMeters = 0;
-        bestTimeInSeconds = 0;
-    }
-
-    @Override
-    public void compute(GpxTrack track) {
+        firstTimeInSeconds = track.getFirstTime();
         gpxPoints.addAll(track.getGpxPoints());
         for (endPointIndex = 1; endPointIndex < gpxPoints.size();) {
             if (distanceInMeters < targetInMeters) {
@@ -106,7 +100,7 @@ public class Record implements Statistics {
     }
 
     @Override
-    public String toString() {
-        return getResult().toString();
+    public boolean isAvailable() {
+        return bestDistanceInMeters >= targetInMeters;
     }
 }

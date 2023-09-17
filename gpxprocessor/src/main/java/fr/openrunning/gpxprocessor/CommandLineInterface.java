@@ -11,10 +11,13 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import fr.openrunning.gpxprocessor.database.DatabaseSerializer;
 import fr.openrunning.gpxprocessor.database.DatabaseService;
 import fr.openrunning.gpxprocessor.generator.StatisticsGenerator;
-import fr.openrunning.gpxprocessor.parser.GpxParser;
+import fr.openrunning.gpxprocessor.generator.statistics.RecordStatistic;
+import fr.openrunning.gpxprocessor.gpxparser.GpxParser;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
+import fr.openrunning.model.Record;
 
 @Component
 public class CommandLineInterface implements ApplicationRunner {
@@ -22,18 +25,19 @@ public class CommandLineInterface implements ApplicationRunner {
     private final CommandLineOptionManager optionManager;
     private final StatisticsGenerator statisticsGenerator;
     private final DatabaseService databaseService;
+    private final DatabaseSerializer databaseSerializer;
 
-    // TODO Save the record to the database
     // TODO Use statistics to fill database with weekly, monthly, yearly data
     private List<File> gpxFiles;
     private List<GpxTrack> gpxTracks;
 
     @Autowired
     public CommandLineInterface(CommandLineOptionManager optionManager, StatisticsGenerator generator,
-            DatabaseService service) {
-        this.databaseService = service;
-        this.statisticsGenerator = generator;
+            DatabaseService service, DatabaseSerializer databaseSerializer) {
         this.optionManager = optionManager;
+        this.statisticsGenerator = generator;
+        this.databaseService = service;
+        this.databaseSerializer = databaseSerializer;
         this.gpxFiles = new LinkedList<>();
         this.gpxTracks = new LinkedList<>();
     }
@@ -42,13 +46,14 @@ public class CommandLineInterface implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         try {
             logger.info("Starting the CLI...");
-            optionManager.addStatistics(statisticsGenerator, args);
+            optionManager.getEnabledStatisticModule(args)
+                    .forEach(moduleName -> statisticsGenerator.enabledStatisticModule(moduleName));
             this.gpxFiles = optionManager.getGpxFiles(args);
             parseGpxFiles();
             buildGpxTracks();
             if (optionManager.mustSaveToDatabase(args)) {
                 int userId = optionManager.getUserIdFromEmail(args);
-                saveToDatabase(args, userId);
+                saveToDatabase(userId);
             }
         } catch (Exception e) {
             logger.error("error while parsing GPX files", e);
@@ -83,18 +88,29 @@ public class CommandLineInterface implements ApplicationRunner {
         });
     }
 
-    private void saveToDatabase(ApplicationArguments args, final int userId) {
+    private void saveToDatabase(final int userId) {
         gpxTracks.forEach((gpxTrack) -> {
             try {
-                if (databaseService.existsTrack(userId, gpxTrack.getFirstTime())) {
-                    logger.warn(
-                            "track associated to " + gpxTrack.getFilename()
-                                    + " already exists. We will delete this track and the associated statistics.");
-                    databaseService.deleteTrack(userId, gpxTrack.getFirstTime());
-                }
-                databaseService.insertTrack(gpxTrack.toTrack(userId));
+                databaseService.save(gpxTrack.toDatabaseObject(userId));
             } catch (Exception e) {
                 logger.error("can not save data from " + gpxTrack.getFilename(), e);
+            }
+        });
+        statisticsGenerator.getStatistics().forEach((stats) -> {
+            String error = "error while saving '" + stats.getModuleName() + "' to the database";
+            try {
+                switch (stats.getModuleName()) {
+                    case PERIODIC:
+                        break;
+                    case RECORD:
+                        Record moduleResult = databaseSerializer.convert(userId, (RecordStatistic) stats);
+                        databaseService.save(moduleResult);
+                        break;
+                    default:
+                        logger.error(error + ": unknown module");
+                }
+            } catch (Exception e) {
+                logger.error(error, e);
             }
         });
     }

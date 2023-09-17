@@ -1,11 +1,18 @@
 package fr.openrunning.gpxprocessor.generator;
 
+import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
+import lombok.Getter;
 
-public interface Statistics {
-    void initialize();
+public abstract class Statistics {
+    @Getter
+    private final StatisticModuleName moduleName;
 
-    void compute(GpxTrack track);
+    public Statistics(StatisticModuleName moduleName) {
+        this.moduleName = moduleName;
+    }
 
-    StatisticResult getResult();
+    abstract public void compute(GpxTrack track) throws GpxProcessorException;
+
+    abstract public boolean isAvailable();
 }

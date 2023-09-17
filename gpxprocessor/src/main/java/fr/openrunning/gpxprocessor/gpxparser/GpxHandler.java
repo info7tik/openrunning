@@ -1,4 +1,4 @@
-package fr.openrunning.gpxprocessor.parser;
+package fr.openrunning.gpxprocessor.gpxparser;
 
 import java.time.Instant;
 

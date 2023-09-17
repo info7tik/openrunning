@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class TrackId {
+public class TimestampUserPrimaryKey {
     @Getter
     private long timestamp;
     @Getter

@@ -10,8 +10,8 @@ import lombok.Setter;
 
 @Entity
 @IdClass(TimestampUserPrimaryKey.class)
-@Table(name = "tracks")
-public class Track extends DatabaseObject {
+@Table(name = "records")
+public class Record extends DatabaseObject {
     @Id
     @Setter
     @Getter
@@ -31,8 +31,10 @@ public class Track extends DatabaseObject {
     private long timeInSeconds;
     @Setter
     @Getter
-    private String name;
+    @Column(name = "first_point_index")
+    private int firstPointIndex;
     @Setter
     @Getter
-    private String filename;
+    @Column(name = "last_point_index")
+    private int lastPointIndex;
 }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import fr.openrunning.gpxprocessor.gpxparser.GpxParser;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 
 @SpringBootTest
