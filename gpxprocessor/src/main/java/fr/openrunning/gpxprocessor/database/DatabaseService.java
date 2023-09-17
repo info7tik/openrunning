@@ -9,7 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
-import fr.openrunning.gpxprocessor.generator.statistics.RecordStatistic;
+import fr.openrunning.gpxprocessor.statistics.modules.RecordStatistic;
 import fr.openrunning.model.DatabaseObject;
 import fr.openrunning.model.Record;
 import fr.openrunning.model.TimestampUserPrimaryKey;

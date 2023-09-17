@@ -1,14 +1,14 @@
-package fr.openrunning.gpxprocessor.generator;
+package fr.openrunning.gpxprocessor.statistics;
 
 import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 import lombok.Getter;
 
-public abstract class Statistics {
+public abstract class StatisticModule {
     @Getter
     private final StatisticModuleName moduleName;
 
-    public Statistics(StatisticModuleName moduleName) {
+    public StatisticModule(StatisticModuleName moduleName) {
         this.moduleName = moduleName;
     }
 

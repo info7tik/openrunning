@@ -1,4 +1,4 @@
-package fr.openrunning.gpxprocessor.generator.statistics;
+package fr.openrunning.gpxprocessor.statistics.modules;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -8,14 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
-import fr.openrunning.gpxprocessor.generator.StatisticModuleName;
-import fr.openrunning.gpxprocessor.generator.Statistics;
+import fr.openrunning.gpxprocessor.statistics.StatisticModule;
+import fr.openrunning.gpxprocessor.statistics.StatisticModuleName;
 import fr.openrunning.gpxprocessor.track.GpxPoint;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 import fr.openrunning.gpxprocessor.track.Utils;
 import lombok.Getter;
 
-public class RecordStatistic extends Statistics {
+public class RecordStatistic extends StatisticModule {
     private final Logger logger = LoggerFactory.getLogger(RecordStatistic.class);
     private final int IMPROVE_PRECISION_MULTIPLIER = 1000000;
     @Getter

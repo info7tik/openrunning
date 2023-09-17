@@ -12,9 +12,9 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import fr.openrunning.gpxprocessor.database.DatabaseService;
-import fr.openrunning.gpxprocessor.generator.StatisticModuleManager;
-import fr.openrunning.gpxprocessor.generator.statistics.RecordStatistic;
 import fr.openrunning.gpxprocessor.gpxparser.GpxParser;
+import fr.openrunning.gpxprocessor.statistics.StatisticModuleManager;
+import fr.openrunning.gpxprocessor.statistics.modules.RecordStatistic;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 
 @Component

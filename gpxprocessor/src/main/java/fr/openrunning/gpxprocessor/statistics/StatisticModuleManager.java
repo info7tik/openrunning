@@ -1,4 +1,4 @@
-package fr.openrunning.gpxprocessor.generator;
+package fr.openrunning.gpxprocessor.statistics;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import fr.openrunning.gpxprocessor.generator.statistics.RecordStatistic;
+import fr.openrunning.gpxprocessor.statistics.modules.RecordStatistic;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 import lombok.Getter;
 
@@ -17,7 +17,7 @@ public class StatisticModuleManager {
     private final Logger logger = LoggerFactory.getLogger(StatisticModuleManager.class);
     private List<StatisticModuleName> enabledModules = new LinkedList<>();
     @Getter
-    private List<Statistics> statistics = new ArrayList<>();
+    private List<StatisticModule> statistics = new ArrayList<>();
 
     public void enabledStatisticModule(StatisticModuleName moduleName) {
         enabledModules.add(moduleName);

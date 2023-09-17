@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import fr.openrunning.gpxprocessor.database.DatabaseService;
 import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
-import fr.openrunning.gpxprocessor.generator.StatisticModuleName;
+import fr.openrunning.gpxprocessor.statistics.StatisticModuleName;
 
 @Component
 public class CommandLineOptionManager {
