@@ -73,7 +73,6 @@ public class DatabaseService {
             try {
                 Frequency frequency = getFrequencyOrNull(userId, dto.getTimestamp());
                 if (frequency == null) {
-                    logger.info("save " + dto.getTotalDistanceInMeters() + " for " + ((Frequency) dto).getFrequency());
                     save(frequencyRepository, dto);
                 } else {
                     frequency.aggregate(dto);
@@ -97,22 +96,6 @@ public class DatabaseService {
 
     private <T extends DatabaseObject> void save(
             CrudRepository<T, TimestampUserPrimaryKey> repository, T objectToSave) {
-        if (exists(repository, objectToSave.getUserId(), objectToSave.getTimestamp())) {
-            logger.warn("timestamp '" + objectToSave.getTimestamp() + "' already exists for user '"
-                    + objectToSave.getUserId() + "'. We delete it.");
-        }
         repository.save(objectToSave);
-    }
-
-    private <T extends DatabaseObject> boolean exists(
-            CrudRepository<T, TimestampUserPrimaryKey> repository, int userId, long timestamp) {
-        TimestampUserPrimaryKey primaryKey = new TimestampUserPrimaryKey(timestamp, userId);
-        return repository.existsById(primaryKey);
-    }
-
-    private <T extends DatabaseObject> void delete(
-            CrudRepository<T, TimestampUserPrimaryKey> repository, int userId, long timestamp) {
-        TimestampUserPrimaryKey primaryKey = new TimestampUserPrimaryKey(timestamp, userId);
-        repository.deleteById(primaryKey);
     }
 }
