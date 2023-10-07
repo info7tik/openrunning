@@ -1,6 +1,7 @@
 package fr.openrunning.gpxprocessor.database;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,13 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
-import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
+import fr.openrunning.gpxprocessor.statistics.modules.FrequencyStatistic;
 import fr.openrunning.gpxprocessor.statistics.modules.RecordStatistic;
-import fr.openrunning.model.DatabaseObject;
-import fr.openrunning.model.Record;
-import fr.openrunning.model.TimestampUserPrimaryKey;
-import fr.openrunning.model.Track;
-import fr.openrunning.model.User;
+import fr.openrunning.model.database.DatabaseObject;
+import fr.openrunning.model.database.TimestampUserPrimaryKey;
+import fr.openrunning.model.database.frequency.Frequency;
+import fr.openrunning.model.database.frequency.FrequencyRepository;
+import fr.openrunning.model.database.record.RecordsRepository;
+import fr.openrunning.model.database.track.Track;
+import fr.openrunning.model.database.track.TracksRepository;
+import fr.openrunning.model.database.user.User;
+import fr.openrunning.model.database.user.UserRepository;
 
 @Service
 public class DatabaseService {
@@ -22,13 +27,15 @@ public class DatabaseService {
     private final UserRepository userRepository;
     private final TracksRepository tracksRepository;
     private final RecordsRepository recordsRepository;
+    private final FrequencyRepository frequencyRepository;
 
     @Autowired
-    public DatabaseService(
-            UserRepository userRepository, TracksRepository tracksRepository, RecordsRepository recordsRepository) {
+    public DatabaseService(UserRepository userRepository, TracksRepository tracksRepository,
+            RecordsRepository recordsRepository, FrequencyRepository frequencyRepository) {
         this.userRepository = userRepository;
         this.tracksRepository = tracksRepository;
         this.recordsRepository = recordsRepository;
+        this.frequencyRepository = frequencyRepository;
     }
 
     public int getUserIdFromEmail(String email) {
@@ -43,49 +50,56 @@ public class DatabaseService {
         }
     }
 
-    public void save(Track track) throws GpxProcessorException {
+    public void save(Track track) {
         try {
             save(tracksRepository, track);
         } catch (Exception e) {
-            throw new GpxProcessorException("error while saving to database", e);
+            logger.info("error while saving to database", e);
         }
     }
 
-    public Record save(int userId, RecordStatistic recordStats) throws GpxProcessorException {
-        try {
-            Record recordDTO = convert(userId, recordStats);
-            save(recordsRepository, recordDTO);
-            return recordDTO;
-        } catch (Exception e) {
-            throw new GpxProcessorException("error while saving to database", e);
-        }
+    public void save(int userId, RecordStatistic recordStats) {
+        recordStats.toDatabaseObject(userId).forEach(dto -> {
+            try {
+                save(recordsRepository, dto);
+            } catch (Exception e) {
+                logger.info("error while saving to database", e);
+            }
+        });
     }
 
-    private Record convert(int userId, RecordStatistic recordStats) throws GpxProcessorException {
-        if (recordStats.isAvailable()) {
-            long bestTimeForTarget = recordStats.getBestTimeInSeconds() * recordStats.getTargetInMeters()
-                    / recordStats.getBestDistanceInMeters();
-            Record recordDatabase = new Record();
-            recordDatabase.setTimestamp(recordStats.getFirstTimeInSeconds());
-            recordDatabase.setUserId(userId);
-            recordDatabase.setDistanceInMeters(recordStats.getTargetInMeters());
-            recordDatabase.setTimeInSeconds(bestTimeForTarget);
-            recordDatabase.setFirstPointIndex(recordStats.getBestStartIndex());
-            recordDatabase.setLastPointIndex(recordStats.getBestEndIndex());
-            return recordDatabase;
+    public void save(int userId, FrequencyStatistic frequencyStats) {
+        frequencyStats.toDatabaseObject(userId).forEach(dto -> {
+            try {
+                Frequency frequency = getFrequencyOrNull(userId, dto.getTimestamp());
+                if (frequency == null) {
+                    logger.info("save " + dto.getTotalDistanceInMeters() + " for " + ((Frequency) dto).getFrequency());
+                    save(frequencyRepository, dto);
+                } else {
+                    frequency.aggregate(dto);
+                    save(frequencyRepository, frequency);
+                }
+            } catch (Exception e) {
+                logger.info("error while saving to database", e);
+            }
+        });
+    }
+
+    private Frequency getFrequencyOrNull(int userId, long timestamp) {
+        TimestampUserPrimaryKey primaryKey = new TimestampUserPrimaryKey(timestamp, userId);
+        Optional<Frequency> frequency = frequencyRepository.findById(primaryKey);
+        if (frequency.isPresent()) {
+            return frequency.get();
         } else {
-            String error = "No record available for " + recordStats.getTargetInMeters() + " meters";
-            logger.error(error);
-            throw new GpxProcessorException(error);
+            return null;
         }
     }
 
-    private <T extends DatabaseObject> void save(CrudRepository<T, TimestampUserPrimaryKey> repository,
-            T objectToSave) {
+    private <T extends DatabaseObject> void save(
+            CrudRepository<T, TimestampUserPrimaryKey> repository, T objectToSave) {
         if (exists(repository, objectToSave.getUserId(), objectToSave.getTimestamp())) {
             logger.warn("timestamp '" + objectToSave.getTimestamp() + "' already exists for user '"
                     + objectToSave.getUserId() + "'. We delete it.");
-            delete(repository, objectToSave.getUserId(), objectToSave.getTimestamp());
         }
         repository.save(objectToSave);
     }

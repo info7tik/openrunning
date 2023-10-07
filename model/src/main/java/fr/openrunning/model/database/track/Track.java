@@ -1,5 +1,7 @@
-package fr.openrunning.model;
+package fr.openrunning.model.database.track;
 
+import fr.openrunning.model.database.DatabaseObject;
+import fr.openrunning.model.database.TimestampUserPrimaryKey;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,8 +12,8 @@ import lombok.Setter;
 
 @Entity
 @IdClass(TimestampUserPrimaryKey.class)
-@Table(name = "records")
-public class Record extends DatabaseObject {
+@Table(name = "tracks")
+public class Track extends DatabaseObject {
     @Id
     @Setter
     @Getter
@@ -31,10 +33,8 @@ public class Record extends DatabaseObject {
     private long timeInSeconds;
     @Setter
     @Getter
-    @Column(name = "first_point_index")
-    private int firstPointIndex;
+    private String name;
     @Setter
     @Getter
-    @Column(name = "last_point_index")
-    private int lastPointIndex;
+    private String filename;
 }

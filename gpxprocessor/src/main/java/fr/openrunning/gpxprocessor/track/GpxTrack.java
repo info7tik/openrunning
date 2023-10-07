@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
-import fr.openrunning.model.Track;
+import fr.openrunning.model.database.track.Track;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,7 +33,7 @@ public class GpxTrack {
         gpxPoints.add(point);
     }
 
-    public void computeTotalDistance() {
+    public void computeTotalDistanceAndTime() {
         distanceInMeters = 0;
         timeInSeconds = 0;
         for (int pointIndex = 1; pointIndex < gpxPoints.size(); pointIndex++) {

@@ -1,11 +1,11 @@
-package fr.openrunning.gpxprocessor.database;
+package fr.openrunning.model.database.user;
 
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-import fr.openrunning.model.User;
-
+@Repository
 public interface UserRepository extends CrudRepository<User, Integer> {
     List<User> findByEmail(String email);
 }

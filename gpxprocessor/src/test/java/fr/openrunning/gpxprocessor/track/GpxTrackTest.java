@@ -30,7 +30,7 @@ public class GpxTrackTest {
     @Test
     public void computeTotalDistanceTest() {
         try {
-            track.computeTotalDistance();
+            track.computeTotalDistanceAndTime();
             Assertions.assertEquals(9415, track.getDistanceInMeters());
             Assertions.assertEquals(2772, track.getTimeInSeconds());
         } catch (Exception e) {

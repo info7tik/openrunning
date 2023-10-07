@@ -1,4 +1,4 @@
-package fr.openrunning.model;
+package fr.openrunning.model.database;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

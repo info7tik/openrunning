@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import fr.openrunning.gpxprocessor.database.DatabaseService;
 import fr.openrunning.gpxprocessor.gpxparser.GpxParser;
 import fr.openrunning.gpxprocessor.statistics.StatisticModuleManager;
+import fr.openrunning.gpxprocessor.statistics.modules.FrequencyStatistic;
 import fr.openrunning.gpxprocessor.statistics.modules.RecordStatistic;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 
@@ -23,8 +24,6 @@ public class CommandLineInterface implements ApplicationRunner {
     private final CommandLineOptionManager optionManager;
     private final StatisticModuleManager moduleManager;
     private final DatabaseService databaseService;
-
-    // TODO Use statistics to fill database with weekly, monthly, yearly data
     private List<File> gpxFiles;
     private List<GpxTrack> gpxTracks;
 
@@ -63,7 +62,7 @@ public class CommandLineInterface implements ApplicationRunner {
             try {
                 GpxParser parser = new GpxParser();
                 GpxTrack track = parser.parse(file);
-                track.computeTotalDistance();
+                track.computeTotalDistanceAndTime();
                 track.computeSamples();
                 gpxTracks.add(track);
             } catch (Exception e) {
@@ -96,7 +95,8 @@ public class CommandLineInterface implements ApplicationRunner {
             String error = "error while saving '" + stats.getModuleName() + "' to the database";
             try {
                 switch (stats.getModuleName()) {
-                    case PERIODIC:
+                    case FREQUENCY:
+                        databaseService.save(userId, (FrequencyStatistic) stats);
                         break;
                     case RECORD:
                         databaseService.save(userId, (RecordStatistic) stats);

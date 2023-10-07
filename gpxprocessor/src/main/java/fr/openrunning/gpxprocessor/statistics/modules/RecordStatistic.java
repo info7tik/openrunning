@@ -13,9 +13,10 @@ import fr.openrunning.gpxprocessor.statistics.StatisticModuleName;
 import fr.openrunning.gpxprocessor.track.GpxPoint;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 import fr.openrunning.gpxprocessor.track.Utils;
+import fr.openrunning.model.database.record.Record;
 import lombok.Getter;
 
-public class RecordStatistic extends StatisticModule {
+public class RecordStatistic extends StatisticModule<Record> {
     private final Logger logger = LoggerFactory.getLogger(RecordStatistic.class);
     private final int IMPROVE_PRECISION_MULTIPLIER = 1000000;
     @Getter
@@ -100,7 +101,19 @@ public class RecordStatistic extends StatisticModule {
     }
 
     @Override
-    public boolean isAvailable() {
-        return bestDistanceInMeters >= targetInMeters;
+    public List<Record> toDatabaseObject(int userId) {
+        List<Record> records = new ArrayList<>();
+        if (bestDistanceInMeters >= targetInMeters) {
+            long bestTimeForTarget = bestTimeInSeconds * targetInMeters / bestDistanceInMeters;
+            Record recordDatabase = new Record();
+            recordDatabase.setTimestamp(firstTimeInSeconds);
+            recordDatabase.setUserId(userId);
+            recordDatabase.setDistanceInMeters(targetInMeters);
+            recordDatabase.setTimeInSeconds(bestTimeForTarget);
+            recordDatabase.setFirstPointIndex(bestStartIndex);
+            recordDatabase.setLastPointIndex(bestEndIndex);
+            records.add(recordDatabase);
+        }
+        return records;
     }
 }
