@@ -25,7 +25,7 @@ public class CommandLineOptionManager {
         this.databaseService = service;
     }
 
-    public List<StatisticModuleName> getEnabledStatisticModule(ApplicationArguments args) {
+    public List<StatisticModuleName> getEnabledStatisticModules(ApplicationArguments args) {
         String moduleOptionName = "stats";
         List<StatisticModuleName> moduleNames = new ArrayList<>();
         if (args.containsOption(moduleOptionName)) {

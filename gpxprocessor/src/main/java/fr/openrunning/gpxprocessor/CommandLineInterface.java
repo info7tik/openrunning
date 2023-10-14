@@ -41,11 +41,11 @@ public class CommandLineInterface implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         try {
             logger.info("Starting the CLI...");
-            optionManager.getEnabledStatisticModule(args)
+            optionManager.getEnabledStatisticModules(args)
                     .forEach(moduleName -> moduleManager.enabledStatisticModule(moduleName));
             this.gpxFiles = optionManager.getGpxFiles(args);
             parseGpxFiles();
-            buildGpxTracks();
+            buildStatistics();
             if (optionManager.mustSaveToDatabase(args)) {
                 int userId = optionManager.getUserIdFromEmail(args);
                 saveToDatabase(userId);
@@ -65,17 +65,17 @@ public class CommandLineInterface implements ApplicationRunner {
                 track.computeTotalDistanceAndTime();
                 track.computeSamples();
                 gpxTracks.add(track);
+                logger.info(track.buildTrackInformation());
             } catch (Exception e) {
                 logger.error("error while parsing '" + file.getAbsolutePath() + "'", e);
             }
         });
     }
 
-    private void buildGpxTracks() {
+    private void buildStatistics() {
         gpxTracks.forEach((track) -> {
             logger.info("Statistics for " + track.getFilename());
             try {
-                logger.info(track.buildTrackInformation());
                 moduleManager.generateStatistics(track);
             } catch (Exception e) {
                 logger.error("error while generating stats from '" + track.getName() + "'", e);

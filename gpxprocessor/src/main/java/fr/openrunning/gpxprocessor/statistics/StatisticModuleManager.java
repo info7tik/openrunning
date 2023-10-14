@@ -30,19 +30,30 @@ public class StatisticModuleManager {
         enabledModules.forEach(module -> {
             String error = "error while generating statistic '" + module + "'";
             try {
-                StatisticModule<? extends DatabaseObject> statisticModule = null;
+                List<StatisticModule<? extends DatabaseObject>> statisticModules = new ArrayList<>();
                 switch (module) {
                     case FREQUENCY:
-                        statisticModule = new FrequencyStatistic();
+                        statisticModules.add(new FrequencyStatistic());
                         break;
                     case RECORD:
-                        statisticModule = new RecordStatistic(2000);
+                        statisticModules.add(new RecordStatistic(1000));
+                        statisticModules.add(new RecordStatistic(5000));
+                        statisticModules.add(new RecordStatistic(10000));
+                        statisticModules.add(new RecordStatistic(15000));
+                        statisticModules.add(new RecordStatistic(21000));
+                        statisticModules.add(new RecordStatistic(42000));
                         break;
                     default:
                         throw new GpxProcessorException("the module " + module + "is not loaded or does not exist");
                 }
-                statisticModule.compute(track);
-                statistics.add(statisticModule);
+                statisticModules.forEach((statsModule) -> {
+                    try {
+                        statsModule.compute(track);
+                        statistics.add(statsModule);
+                    } catch (Exception e) {
+                        logger.error(error, e);
+                    }
+                });
             } catch (Exception e) {
                 logger.error(error, e);
             }
