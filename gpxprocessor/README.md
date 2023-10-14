@@ -9,7 +9,7 @@ mvn clean install
 ```
 * Compile the `gpxprocessor` application
 ```
-cd gpxprocessor
+cd ../gpxprocessor
 mvn clean package -DskipTests
 ```
 
