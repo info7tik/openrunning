@@ -2,7 +2,14 @@
 Parse GPX files to extract running statistics.
 
 ## Compilation
+* Install the [model](../model) project in your maven repository
 ```
+cd ../model
+mvn clean install
+```
+* Compile the `gpxprocessor` application
+```
+cd gpxprocessor
 mvn clean package -DskipTests
 ```
 
