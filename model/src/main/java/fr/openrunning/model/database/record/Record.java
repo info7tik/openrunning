@@ -1,7 +1,7 @@
 package fr.openrunning.model.database.record;
 
 import fr.openrunning.model.database.DatabaseObject;
-import fr.openrunning.model.database.TimestampUserPrimaryKey;
+import fr.openrunning.model.database.TimestampUserDistancePrimaryKey;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.IdClass;
@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@IdClass(TimestampUserPrimaryKey.class)
+@IdClass(TimestampUserDistancePrimaryKey.class)
 @Table(name = "records")
 public class Record extends DatabaseObject {
     @Setter
