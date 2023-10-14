@@ -14,6 +14,7 @@ backend/upload-dir/
 *.sublime-workspace
 
 # Visual Studio Code
+**/*.code-workspace
 */.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
