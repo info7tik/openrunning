@@ -1,4 +1,4 @@
-package fr.openrunning.orbackend.storage;
+package fr.openrunning.orbackend.gpx;
 
 import java.io.File;
 import java.io.InputStream;
@@ -15,13 +15,13 @@ import fr.openrunning.orbackend.common.exception.OpenRunningException;
 import fr.openrunning.orbackend.user.SecurityEncoder;
 
 @Service
-public class StorageService {
-    private final Logger logger = LoggerFactory.getLogger(StorageService.class);
+public class GpxService {
+    private final Logger logger = LoggerFactory.getLogger(GpxService.class);
     private final SecurityEncoder securityEncoder;
     private final File uploadDirectory;
 
     @Autowired
-    public StorageService(SecurityEncoder securityEncoder) {
+    public GpxService(SecurityEncoder securityEncoder) {
         String allDirectoriesLocation = "upload-dir";
         this.uploadDirectory = new File(allDirectoriesLocation);
         this.securityEncoder = securityEncoder;

@@ -14,7 +14,7 @@ export class RunListComponent {
     previousRunNb: number = 0;
     nextRunNb: number = 0;
 
-    selectedRunId: string = "";
+    selectedRunId: number = 0;
     selectedRunDate: string = "";
 
     constructor(private runService: RunService) { }
@@ -24,12 +24,16 @@ export class RunListComponent {
         this.updateNextRunNb();
     }
 
-    updatePreviousRunNb() : void {
+    updatePreviousRunNb(): void {
         this.previousRunNb = this.showStartIndex;
     }
 
-    updateNextRunNb() : void {
-        this.nextRunNb = this.runs.length - this.showEndIndex;
+    updateNextRunNb(): void {
+        if (this.runs.length > this.showEndIndex) {
+            this.nextRunNb = this.runs.length - this.showEndIndex;
+        } else {
+            this.nextRunNb = 0;
+        }
     }
 
     updateRunNbCounters(): void {
@@ -45,7 +49,6 @@ export class RunListComponent {
 
     showPreviousRun(): void {
         if (this.showStartIndex > 0) {
-
             this.showStartIndex--;
             this.showEndIndex--;
             this.updateRunNbCounters();
@@ -60,7 +63,7 @@ export class RunListComponent {
         }
     }
 
-    setSelectedRunId(runId: string, runDate: string) {
+    setSelectedRunId(runId: number, runDate: string) {
         this.selectedRunId = runId;
         this.selectedRunDate = runDate;
     }

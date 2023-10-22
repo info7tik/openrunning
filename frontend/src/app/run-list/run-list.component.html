@@ -8,4 +8,4 @@
     </div>
     <button class="list-navigator" (click)="showNextRun()">Next ({{nextRunNb}})</button>
 </div>
-<app-run-stats *ngIf="selectedRunId.length > 0" runId={{selectedRunId}} runDate="{{selectedRunDate}}"></app-run-stats>
+<app-run-stats *ngIf="selectedRunId > 0" runId={{selectedRunId}} runDate="{{selectedRunDate}}"></app-run-stats>

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import fr.openrunning.model.database.user.User;
 import fr.openrunning.model.database.user.UserRepository;
 import fr.openrunning.orbackend.common.exception.OpenRunningException;
-import fr.openrunning.orbackend.storage.StorageService;
+import fr.openrunning.orbackend.gpx.GpxService;
 import fr.openrunning.orbackend.user.json.JsonLoginInformation;
 
 @Service
@@ -21,11 +21,11 @@ public class UserService {
     private Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository repository;
     private final SecurityEncoder securityEncoder;
-    private final StorageService storageService;
+    private final GpxService storageService;
     private Set<String> tokens = new HashSet<>();
 
     @Autowired
-    public UserService(UserRepository userRepository, SecurityEncoder securityEncoder, StorageService storageService) {
+    public UserService(UserRepository userRepository, SecurityEncoder securityEncoder, GpxService storageService) {
         this.repository = userRepository;
         this.securityEncoder = securityEncoder;
         this.storageService = storageService;

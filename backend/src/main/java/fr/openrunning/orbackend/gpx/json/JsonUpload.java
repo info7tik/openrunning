@@ -1,4 +1,4 @@
-package fr.openrunning.orbackend.storage.json;
+package fr.openrunning.orbackend.gpx.json;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

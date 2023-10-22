@@ -1,4 +1,4 @@
-package fr.openrunning.orbackend.storage;
+package fr.openrunning.orbackend.gpx;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,17 +13,17 @@ import org.springframework.web.multipart.MultipartFile;
 import fr.openrunning.orbackend.common.exception.OpenRunningException;
 import fr.openrunning.orbackend.common.json.JsonMessage;
 import fr.openrunning.orbackend.common.json.JsonResponse;
-import fr.openrunning.orbackend.storage.json.JsonUpload;
+import fr.openrunning.orbackend.gpx.json.JsonUpload;
 
 @Controller
 @RequestMapping("/gpx")
-public class StorageController {
-    private final Logger logger = LoggerFactory.getLogger(StorageController.class);
-    private final StorageService service;
+public class GpxController {
+    private final Logger logger = LoggerFactory.getLogger(GpxController.class);
+    private final GpxService service;
 
     @Autowired
-    public StorageController(StorageService storageService) {
-        this.service = storageService;
+    public GpxController(GpxService gpxService) {
+        this.service = gpxService;
     }
 
     @PostMapping("/upload")
