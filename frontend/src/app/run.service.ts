@@ -43,7 +43,7 @@ export class RunService {
     ]
 
     getRuns(): Observable<IRunWithTimestamp[]> {
-        return this.apiRequest.get<IRunWithTimestamp[]>("run/all");
+        return this.apiRequest.get<IRunWithTimestamp[]>("run/last/DAILY/1448795579");
     }
 
     getRunById(runId: string): Observable<IRunStats> {

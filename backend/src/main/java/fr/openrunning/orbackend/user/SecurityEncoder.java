@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import fr.openrunning.model.database.user.User;
 import fr.openrunning.orbackend.common.exception.OpenRunningException;
-import fr.openrunning.orbackend.user.json.JsonLoginInformation;
 
 @Component
 public class SecurityEncoder {
@@ -33,11 +33,11 @@ public class SecurityEncoder {
     private SecretKeySpec secretKey = null;
     private byte[] key;
 
-    public String generateToken(JsonLoginInformation loginInformation) throws OpenRunningException {
+    public String generateToken(User userInformation) throws OpenRunningException {
         try {
             LocalDateTime oneDayLater = LocalDateTime.now().plusDays(1);
             return encrypt(
-                    dateFormatter.format(oneDayLater) + separator + loginInformation.getEmail() + separator + salt);
+                    dateFormatter.format(oneDayLater) + separator + userInformation.getEmail() + separator + salt);
         } catch (Exception e) {
             logger.error("error while generating token", e);
             throw buildOpenRunningExceptionForInvalidToken();
