@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiRequestService } from './api-request.service';
-import { IDefaultMessage } from './common/IDefaultMessage';
-import { ILoggedInformation } from './login/ILoggedInformation';
+import { IDefaultMessage } from './interface/IDefaultMessage';
+import { ILoggedInformation } from './interface/ILoggedInformation';
 
 @Injectable({
     providedIn: 'root'

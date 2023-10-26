@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Run } from '../common/run/Run';
 import { RunService } from '../run.service';
+import { Run } from './Run';
 
 @Component({
     selector: 'app-run-list',

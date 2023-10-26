@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ApiRequestService } from './api-request.service';
-import { IRunWithTimestamp } from './common/run/IRunWithTimestamp';
-import { IRunStats } from './common/stats/IRunStats';
+import { IRunStats } from './interface/IRunStats';
+import { IRunWithTimestamp } from './interface/IRunWithTimestamp';
 
 @Injectable({
     providedIn: 'root'

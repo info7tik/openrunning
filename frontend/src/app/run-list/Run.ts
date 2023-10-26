@@ -1,5 +1,5 @@
-import { IRunWithDate } from "./IRunWithDate";
-import { IRunWithTimestamp } from "./IRunWithTimestamp";
+import { IRunWithDate } from "../interface/IRunWithDate";
+import { IRunWithTimestamp } from "../interface/IRunWithTimestamp";
 
 export class Run implements IRunWithDate {
     id: number;
