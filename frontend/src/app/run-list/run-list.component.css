@@ -1,5 +1,5 @@
 .list-container {
-    width: 1000px;
+    width: 1070px;
     margin: auto;
     margin-top: 30px;
     text-align: center;
@@ -15,13 +15,8 @@
     background-color: aquamarine;
 }
 
-.list-viewer {
-    width: 800px;
-    text-align: center;
-}
-
 .run {
-    width: 100px;
+    width: 150px;
     height: 80px;
     margin: 10px;
     border: 1px solid black;

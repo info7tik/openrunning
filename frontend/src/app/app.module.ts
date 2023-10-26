@@ -12,8 +12,8 @@ import { LogoutComponent } from './logout/logout.component';
 import { RunFilterComponent } from './run-filter/run-filter.component';
 import { RunListComponent } from './run-list/run-list.component';
 import { RunStatsComponent } from './run-stats/run-stats.component';
-import { UploadComponent } from './upload/upload.component';
 import { SignupComponent } from './signup/signup.component';
+import { UploadComponent } from './upload/upload.component';
 
 @NgModule({
     declarations: [

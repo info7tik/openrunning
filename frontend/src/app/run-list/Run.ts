@@ -11,11 +11,15 @@ export class Run implements IRunWithDate {
     constructor(runData: IRunWithTimestamp) {
         this.id = runData.timestampInSeconds;
         console.log(runData);
-        let date = new Date(runData.timestampInSeconds * 1000);
-        this.date = date.toLocaleDateString();
+        this.date = this.buildDateString(new Date(runData.timestampInSeconds * 1000));
         this.distanceMeters = runData.distanceMeters;
         this.timeSeconds = runData.timeSeconds;
         this.paceSeconds = runData.paceSeconds;
+    }
+
+    private buildDateString(date: Date): string {
+        let fullString = date.toString();
+        return fullString.split(" ").filter((value, index) => index < 4).join(" ");
     }
 
     formatDistance(): string {
