@@ -21,7 +21,6 @@ export class RunListComponent {
 
     ngOnInit(): void {
         this.getRuns();
-        this.updateNextRunNb();
     }
 
     updatePreviousRunNb(): void {
@@ -44,6 +43,7 @@ export class RunListComponent {
     getRuns(): void {
         this.runService.getRuns().subscribe(receivedRuns => {
             receivedRuns.forEach(receivedRun => this.runs.push(new Run(receivedRun)));
+            this.updateNextRunNb();
         });
     }
 
