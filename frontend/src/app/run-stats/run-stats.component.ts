@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
-import { IRunStats } from '../interface/IRunStats';
 import { RunService } from '../run.service';
+import { IRunStats } from '../type/IRunStats';
 @Component({
     selector: 'app-run-stats',
     templateUrl: './run-stats.component.html',

@@ -1,36 +1,40 @@
 <div class="run-selection">
     <div class="date-settings">
-        <select>
-            <option>Daily</option>
-            <option>Weekly</option>
-            <option>Monthly</option>
-            <option>Yearly</option>
+        <select [(ngModel)]="frequency">
+            <option value="{{defaultFrequency}}" selected="selected">{{defaultFrequency}}</option>
+            <option *ngFor="let frequencyType of frequencyTypes" [value]="frequencyType">
+                {{frequencyType}}
+            </option>
         </select>
 
         <label>From</label>
-        <input type="date" />
+        <input type="date" [(ngModel)]="beginningDate" />
     </div>
     <div class="filter-settings">
         <select [(ngModel)]="operator" (ngModelChange)="updatePropertyTag()">
-            <option value="no_filter" selected="selected">No filter</option>
-            <option *ngFor="let filter of filterOperators" value="{{filter.value}}">{{filter.name}}</option>
+            <option value="{{defaultOperator}}" selected="selected">{{defaultOperator}}</option>
+            <option *ngFor="let operatorType of operatorTypes" [value]="operatorType">
+                {{operatorType}}
+            </option>
         </select>
         <select id="property-tag" [(ngModel)]="property" disabled>
-            <option value="--" selected="selected">--</option>
-            <option *ngFor="let val of filterProperties" value="{{val.value}}">{{val.name}}</option>
+            <option value="{{defaultProperty}}" selected="selected">{{defaultProperty}}</option>
+            <option *ngFor="let propertyType of propertyTypes" [value]="propertyType">
+                {{propertyType}}
+            </option>
         </select>
 
-        <div *ngIf="property === 'distance'" class="inline">
-            <span class="right-margin">Kilometer</span>
-            <input type="number" size=3 value="10" />
+        <div *ngIf="property === distancePropertyValue" class="inline">
+            <span class="right-margin">Meters</span>
+            <input type="number" size=3 step=500 [value]="distanceInMeters" />
         </div>
 
-        <div *ngIf="property === 'pace'" class="inline">
-            <input type="number" size=2 min=0 max=20 value="6" /> min
-            <input type="number" size=2 min=0 max=59 value="30" /> s
+        <div *ngIf="property === pacePropertyValue" class="inline">
+            <input type="number" size=2 min=0 max=30 [value]="paceMinutes" /> min
+            <input type="number" size=2 min=0 max=59 step=10 [value]="paceSeconds" /> s
         </div>
     </div>
-    <button class="filter-button">Show my runs</button>
-    <br/>
+    <button class="filter-button" (click)="showMyRuns()">Show my runs</button>
+    <br />
     <a routerLink="/upload">Import new Runs</a>
 </div>

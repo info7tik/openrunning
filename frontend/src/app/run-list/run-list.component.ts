@@ -20,6 +20,7 @@ export class RunListComponent {
     constructor(private runService: RunService) { }
 
     ngOnInit(): void {
+        this.runService.isRunFilterChanged.subscribe((isChanged) => this.getRuns());
         this.getRuns();
     }
 
@@ -42,6 +43,7 @@ export class RunListComponent {
 
     getRuns(): void {
         this.runService.getRuns().subscribe(receivedRuns => {
+            this.runs = [];
             receivedRuns.forEach(receivedRun => this.runs.push(new Run(receivedRun)));
             this.updateNextRunNb();
         });
