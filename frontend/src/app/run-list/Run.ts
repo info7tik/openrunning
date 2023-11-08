@@ -10,7 +10,6 @@ export class Run implements IRunWithDate {
 
     constructor(runData: IRunWithTimestamp) {
         this.id = runData.timestampInSeconds;
-        console.log(runData);
         this.date = this.buildDateString(new Date(runData.timestampInSeconds * 1000));
         this.distanceMeters = runData.distanceMeters;
         this.timeSeconds = runData.timeSeconds;

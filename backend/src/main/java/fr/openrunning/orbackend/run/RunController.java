@@ -46,18 +46,21 @@ public class RunController {
         }
     }
 
-    // @GetMapping("/data/{runIdentifier}")
-    // public ResponseEntity<Object> getRunDataById(String runIdentifier) {
-    // try {
-    // JsonResponse response = new JsonResponse(service.getLastRuns());
-    // return response.buildSuccessResponse();
-    // } catch (OpenRunningException e) {
-    // String errorMessage = "error while retrieving all runs";
-    // logger.error(errorMessage, e);
-    // JsonResponse response = new JsonResponse(new JsonMessage(errorMessage));
-    // return response.buildInternalErrorResponse();
-    // }
-    // }
+    @GetMapping("/sample/{timestamp}")
+    public ResponseEntity<Object> getRunSamples(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String headerWithToken,
+            @PathVariable long timestamp) {
+        try {
+            int userId = userService.getUserId(extractToken(headerWithToken));
+            JsonResponse response = new JsonResponse(runService.getRunSamples(userId, timestamp));
+            return response.buildSuccessResponse();
+        } catch (OpenRunningException e) {
+            String errorMessage = "error while retrieving all runs";
+            logger.error(errorMessage, e);
+            JsonResponse response = new JsonResponse(new JsonMessage(errorMessage));
+            return response.buildInternalErrorResponse();
+        }
+    }
 
     private String extractToken(String authorizationHeader) throws OpenRunningException {
         String[] information = authorizationHeader.split(" ");

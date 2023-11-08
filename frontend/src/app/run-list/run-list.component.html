@@ -1,6 +1,6 @@
 <div class="list-container">
     <button class="list-navigator" (click)="showPreviousRun()">Previous ({{previousRunNb}})</button>
-    <div *ngFor="let run of runs | slice:showStartIndex:showEndIndex" class="run" (click)="setSelectedRunId(run.id, run.date)">
+    <div *ngFor="let run of runs | slice:showStartIndex:showEndIndex" class="run"  [ngClass]="{'selected': selectedRunId === run.id}" (click)="setSelectedRunId(run.id, run.date)">
         <div>{{run.date}}</div>
         <div>{{run.formatDistance()}}</div>
         <div>{{run.formatTime()}}</div>

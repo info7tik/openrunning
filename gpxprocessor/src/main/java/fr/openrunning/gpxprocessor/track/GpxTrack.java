@@ -25,9 +25,9 @@ public class GpxTrack {
     @Getter
     private final List<GpxPoint> gpxPoints = new ArrayList<>();
     @Getter
-    private final List<Sample> samples = new LinkedList<>();
+    private final List<GpxSample> samples = new LinkedList<>();
     @Getter
-    private Sample bestSample;
+    private GpxSample bestSample;
 
     public void addGpxPoint(GpxPoint point) {
         gpxPoints.add(point);
@@ -55,7 +55,7 @@ public class GpxTrack {
                     gpxPoints.get(pointIndex - 1).getTime(), gpxPoints.get(pointIndex).getTime()).getSeconds();
             number++;
             if (distance >= SAMPLE_SIZE_METERS) {
-                Sample sample = new Sample(distance, (int) time, number);
+                GpxSample sample = new GpxSample(getFirstTime(), distance, (int) time, number);
                 samples.add(sample);
                 if (sample.computeSpeed() > bestSampleSpeed) {
                     bestSample = sample;
@@ -67,7 +67,7 @@ public class GpxTrack {
             }
         }
         if (distance > 0) {
-            samples.add(new Sample(distance, (int) time, number));
+            samples.add(new GpxSample(getFirstTime(), distance, (int) time, number));
         }
     }
 
@@ -97,7 +97,7 @@ public class GpxTrack {
     public String buildSampleInformation() {
         StringBuilder builder = new StringBuilder();
         int totalDistance = 0;
-        for (Sample s : samples) {
+        for (GpxSample s : samples) {
             totalDistance += s.getDistanceInMeters();
             builder.append(Utils.formatDistanceInMeters(totalDistance) + ": " + s.toString() + "\n");
         }

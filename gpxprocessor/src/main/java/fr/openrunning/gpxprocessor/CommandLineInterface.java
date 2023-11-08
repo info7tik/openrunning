@@ -16,6 +16,7 @@ import fr.openrunning.gpxprocessor.gpxparser.GpxParser;
 import fr.openrunning.gpxprocessor.statistics.StatisticModuleManager;
 import fr.openrunning.gpxprocessor.statistics.modules.FrequencyStatistic;
 import fr.openrunning.gpxprocessor.statistics.modules.RecordStatistic;
+import fr.openrunning.gpxprocessor.track.GpxSample;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 
 @Component
@@ -87,6 +88,11 @@ public class CommandLineInterface implements ApplicationRunner {
         gpxTracks.forEach((gpxTrack) -> {
             try {
                 databaseService.save(gpxTrack.toDatabaseObject(userId));
+                List<GpxSample> trackSamples = gpxTrack.getSamples();
+                for (int sampleIndex = 0; sampleIndex < trackSamples.size(); sampleIndex++) {
+                    GpxSample currentSample = trackSamples.get(sampleIndex);
+                    databaseService.save(currentSample.toDatabaseObject(userId, sampleIndex));
+                }
             } catch (Exception e) {
                 logger.error("can not save data from " + gpxTrack.getFilename(), e);
             }

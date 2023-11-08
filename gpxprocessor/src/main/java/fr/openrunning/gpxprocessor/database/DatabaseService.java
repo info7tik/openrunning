@@ -16,6 +16,8 @@ import fr.openrunning.model.database.TimestampUserPrimaryKey;
 import fr.openrunning.model.database.frequency.Frequency;
 import fr.openrunning.model.database.frequency.FrequencyRepository;
 import fr.openrunning.model.database.record.RecordsRepository;
+import fr.openrunning.model.database.samples.Sample;
+import fr.openrunning.model.database.samples.SamplesRepository;
 import fr.openrunning.model.database.track.Track;
 import fr.openrunning.model.database.track.TracksRepository;
 import fr.openrunning.model.database.user.User;
@@ -26,14 +28,17 @@ public class DatabaseService {
     private final Logger logger = LoggerFactory.getLogger(DatabaseService.class);
     private final UserRepository userRepository;
     private final TracksRepository tracksRepository;
+    private final SamplesRepository samplesRepository;
     private final RecordsRepository recordsRepository;
     private final FrequencyRepository frequencyRepository;
 
     @Autowired
     public DatabaseService(UserRepository userRepository, TracksRepository tracksRepository,
-            RecordsRepository recordsRepository, FrequencyRepository frequencyRepository) {
+            SamplesRepository samplesRepository, RecordsRepository recordsRepository,
+            FrequencyRepository frequencyRepository) {
         this.userRepository = userRepository;
         this.tracksRepository = tracksRepository;
+        this.samplesRepository = samplesRepository;
         this.recordsRepository = recordsRepository;
         this.frequencyRepository = frequencyRepository;
     }
@@ -53,6 +58,14 @@ public class DatabaseService {
     public void save(Track track) {
         try {
             save(tracksRepository, track);
+        } catch (Exception e) {
+            logger.info("error while saving to database", e);
+        }
+    }
+
+    public void save(Sample sample) {
+        try {
+            save(samplesRepository, sample);
         } catch (Exception e) {
             logger.info("error while saving to database", e);
         }

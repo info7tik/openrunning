@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { RunService } from '../run.service';
-import { IRunStats } from '../type/IRunStats';
 @Component({
     selector: 'app-run-stats',
     templateUrl: './run-stats.component.html',
@@ -20,10 +19,10 @@ export class RunStatsComponent {
         let idTrimmed = id.trim();
         if (idTrimmed.length > 0) {
             this._runId = idTrimmed;
-            this.displayRunStats();
         } else {
             this._runId = "";
         }
+        this.buildCharts();
     }
 
     @Input() runDate: string = "";
@@ -32,26 +31,35 @@ export class RunStatsComponent {
         Chart.register(...registerables);
     }
 
-    displayRunStats(): void {
-        if (this._runId.length > 0) {
-            let chartResource = this.runService.getRunById(this._runId);
-            chartResource.subscribe(chartData => {
-                this.buildDistanceChart(chartData);
-                this.buildPaceChart(chartData);
-            })
-        }
+    buildCharts(){
+        this.runService.getRunSamples(parseInt(this._runId)).subscribe(
+            (runSamples) => {
+                let aggregatedDistances: number[] = [];
+                let sum = 0;
+                runSamples.distances.forEach(distance => {
+                    sum += distance;
+                    aggregatedDistances.push(sum);
+                });
+                let startTime = runSamples.timestamps[0];
+                let relativeTimes: string[] = [];
+                runSamples.timestamps.forEach(time => {
+                    relativeTimes.push(this.formatTime(time - startTime));
+                });
+                this.buildDistanceChart(relativeTimes, aggregatedDistances, runSamples.distanceUnit, runSamples.paces);
+                this.buildPaceChart(relativeTimes, runSamples.paces, aggregatedDistances, runSamples.distanceUnit);
+            });
     }
 
-    buildDistanceChart(chartData: IRunStats): void {
+    buildDistanceChart(times: string[], distances: number[], distanceUnit: string, paces: number[]): void {
         let chartId = "distance-chart";
         this.destroyExistingChart(chartId);
         new Chart(chartId, {
             type: 'bar',
             data: {
-                labels: chartData.date,
+                labels: times,
                 datasets: [{
-                    label: 'Distance (' + chartData.distanceUnit + ")",
-                    data: chartData.distance,
+                    label: 'Distance (' + distanceUnit + ")",
+                    data: distances,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -81,16 +89,16 @@ export class RunStatsComponent {
         });
     }
 
-    buildPaceChart(chartData: IRunStats) {
+    buildPaceChart(times: string[], paces: number[], distances: number[], distanceUnit: string) {
         let chartId = "pace-chart";
         this.destroyExistingChart(chartId);
         new Chart(chartId, {
             type: 'bar',
             data: {
-                labels: chartData.date,
+                labels: times,
                 datasets: [{
                     label: 'Pace (per km)',
-                    data: chartData.paceInSeconds,
+                    data: paces,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -121,7 +129,8 @@ export class RunStatsComponent {
                         callbacks: {
                             label: (context) => {
                                 let result = [
-                                    "pace: " + this.formatPaceInSeconds(context.raw)
+                                    "pace: " + this.formatTime(context.raw),
+                                    "distance: " + distances[context.dataIndex] + " " + distanceUnit.toLocaleLowerCase()
                                 ];
                                 return result;
                             }
@@ -139,10 +148,18 @@ export class RunStatsComponent {
         }
     }
 
-    formatPaceInSeconds(pace: any): string {
-        let minutes = Math.floor(pace / 60);
-        let seconds = pace % 60;
-        return minutes + "min" + this.always2Digits(seconds) + "s";
+    formatTime(timeInSeconds: any): string {
+        let hours = Math.floor(timeInSeconds / 3600);
+        let remaindedSeconds = timeInSeconds % 3600;
+        let minutes = Math.floor(remaindedSeconds / 60);
+        let seconds = remaindedSeconds % 60;
+        if (hours > 0) {
+            return hours + "h" + this.always2Digits(minutes) + "min" + this.always2Digits(seconds) + "s";
+        } else if (minutes > 0) {
+            return minutes + "min" + this.always2Digits(seconds) + "s";
+        } else {
+            return seconds + "s";
+        }
     }
 
     always2Digits(digit: number): string {

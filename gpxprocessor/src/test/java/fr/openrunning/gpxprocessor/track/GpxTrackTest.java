@@ -45,7 +45,7 @@ public class GpxTrackTest {
             track.computeSamples();
             Assertions.assertEquals(151, track.getSamples().size());
             int totalDistance = track.getSamples().stream()
-                    .map(Sample::getDistanceInMeters).mapToInt(Integer::intValue).sum();
+                    .map(GpxSample::getDistanceInMeters).mapToInt(Integer::intValue).sum();
             Assertions.assertEquals(9415, totalDistance);
             Assertions.assertEquals(4.545, track.getBestSample().computeSpeed());
             Assertions.assertEquals(220, track.getBestSample().computePace());

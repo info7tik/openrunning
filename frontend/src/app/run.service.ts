@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, of } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ApiRequestService } from './api-request.service';
 import { FilterOperator } from './type/FilterOperator';
 import { Frequency } from './type/Frequency';
@@ -28,36 +28,6 @@ export class RunService {
         }
     }
 
-    RUN_STATS = [
-        {
-            "id": "run1",
-            "date": ["11:32", "11:33", "11:35", "11:36", "11:37"],
-            "distanceUnit": "m",
-            "distance": [100, 300, 700, 400, 600],
-            "paceInSeconds": [100, 400, 500, 200, 300]
-        },
-        {
-            "id": "run2",
-            "date": ["11:32", "11:33", "11:35", "11:36", "11:37"],
-            "distanceUnit": "m",
-            "distance": [300, 600, 100, 200, 300],
-            "paceInSeconds": [100, 200, 300, 500, 300]
-        },
-        {
-            "id": "run3",
-            "date": ["11:32", "11:33", "11:35", "11:36", "11:37"],
-            "distanceUnit": "m",
-            "distance": [200, 600, 800, 200, 300],
-            "paceInSeconds": [100, 400, 500, 200, 300]
-        },
-        {
-            "id": "run4",
-            "date": ["11:32", "11:33", "11:35", "11:36", "11:37"],
-            "distanceUnit": "m",
-            "distance": [100, 300, 700, 400, 600],
-            "paceInSeconds": [200, 250, 300, 400, 250]
-        }
-    ]
     setRunFilter(timestampInSeconds: number, frequency: Frequency, operator: FilterOperator,
         distanceInMeters: number, paceInSeconds: number) {
         localStorage.setItem(this.beginningTimestampStorageKey, timestampInSeconds.toString());
@@ -73,11 +43,7 @@ export class RunService {
         return this.apiRequest.get<IRunWithTimestamp[]>("run/last/" + this.frequency + "/" + this.beginningTimestamp);
     }
 
-    getRunById(runId: string): Observable<IRunStats> {
-        let foundRun = this.RUN_STATS.filter(run => run.id == runId);
-        if (foundRun.length == 0) {
-            foundRun = this.RUN_STATS;
-        }
-        return of(foundRun[0]);
+    getRunSamples(runTimestamp: number): Observable<IRunStats> {
+        return this.apiRequest.get<IRunStats>("run/sample/" + runTimestamp);
     }
 }

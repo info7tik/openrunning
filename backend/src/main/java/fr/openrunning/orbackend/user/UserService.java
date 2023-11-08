@@ -22,7 +22,7 @@ public class UserService {
     private final UserRepository repository;
     private final SecurityEncoder securityEncoder;
     private final GpxService storageService;
-    //TODO: signout method
+    // TODO: signout method
     private Map<String, Integer> tokens = new HashMap<>();
 
     @Autowired
@@ -87,9 +87,9 @@ public class UserService {
         }
     }
 
-    public int getUserId(String token) throws OpenRunningException{
-        if(tokens.containsKey(token)){
-        return tokens.get(token);
+    public int getUserId(String token) throws OpenRunningException {
+        if (tokens.containsKey(token)) {
+            return tokens.get(token);
         } else {
             throw new OpenRunningException("error while getting user id with unknown token");
         }

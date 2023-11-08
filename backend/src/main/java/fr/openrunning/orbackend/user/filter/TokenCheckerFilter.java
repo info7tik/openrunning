@@ -30,7 +30,6 @@ public class TokenCheckerFilter implements HandlerInterceptor {
             boolean isAuthenticated = false;
             try {
                 String token = request.getHeader("Authorization");
-                logger.info("header: " + token);
                 if (token != null) {
                     String[] tokenValue = token.split(" ");
                     if (tokenValue.length == 2) {
