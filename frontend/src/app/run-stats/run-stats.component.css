@@ -3,6 +3,18 @@
     text-align: center;
 }
 
+.date {
+    font-weight: bold;
+    color: rgb(56, 189, 241);
+}
+
+.records {
+    width: 1000px;
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+}
+
 .run-chart {
     width: 1000px;
     height: 500px;

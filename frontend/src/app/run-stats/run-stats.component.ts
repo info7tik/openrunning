@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { RunService } from '../run.service';
+import { RunInformation } from '../type/RunInformation';
 @Component({
     selector: 'app-run-stats',
     templateUrl: './run-stats.component.html',
@@ -8,31 +9,22 @@ import { RunService } from '../run.service';
 })
 
 export class RunStatsComponent {
-    private _runId: string = "";
-
-    @Input()
-    get runId(): string {
-        return this._runId;
-    }
-
-    set runId(id: string) {
-        let idTrimmed = id.trim();
-        if (idTrimmed.length > 0) {
-            this._runId = idTrimmed;
-        } else {
-            this._runId = "";
-        }
-        this.buildCharts();
-    }
-
-    @Input() runDate: string = "";
+    public runInfo: RunInformation;
 
     constructor(private runService: RunService) {
+        this.runInfo = runService.getSelectedRunInfo();
         Chart.register(...registerables);
     }
 
-    buildCharts(){
-        this.runService.getRunSamples(parseInt(this._runId)).subscribe(
+    ngOnInit() {
+        this.runService.isSelectedRunChanged.subscribe((isChanged) => {
+            this.runInfo = this.runService.getSelectedRunInfo();
+            this.buildCharts()
+        });
+    }
+
+    buildCharts() {
+        this.runService.getRunSamples(this.runInfo.identifier).subscribe(
             (runSamples) => {
                 let aggregatedDistances: number[] = [];
                 let sum = 0;

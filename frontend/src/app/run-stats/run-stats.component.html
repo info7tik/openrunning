@@ -1,5 +1,9 @@
-<div class="run-stats">
-    <p>Statistics about the run at {{runDate}}</p>
+<div *ngIf="runInfo.identifier > 0" class="run-stats">
+    <p>Statistics about the run at <span class="date">{{runInfo.date}}</span></p>
+    <div class="records">
+        <app-stat-table title="personal"></app-stat-table>
+        <app-stat-table title="track"></app-stat-table>
+    </div>
     <div class="run-chart">
         <canvas id="distance-chart"></canvas>
     </div>

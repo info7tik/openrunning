@@ -1,6 +1,7 @@
 <div class="list-container">
     <button class="list-navigator" (click)="showPreviousRun()">Previous ({{previousRunNb}})</button>
-    <div *ngFor="let run of runs | slice:showStartIndex:showEndIndex" class="run"  [ngClass]="{'selected': selectedRunId === run.id}" (click)="setSelectedRunId(run.id, run.date)">
+    <div *ngFor="let run of runs | slice:showStartIndex:showEndIndex" (click)="onClickSelectRunId(run.id, run.date)"
+        class="run" [ngClass]="{'selected': selectedRunId === run.id}">
         <div>{{run.date}}</div>
         <div>{{run.formatDistance()}}</div>
         <div>{{run.formatTime()}}</div>
@@ -8,4 +9,4 @@
     </div>
     <button class="list-navigator" (click)="showNextRun()">Next ({{nextRunNb}})</button>
 </div>
-<app-run-stats *ngIf="selectedRunId > 0" runId={{selectedRunId}} runDate="{{selectedRunDate}}"></app-run-stats>
+<app-run-stats></app-run-stats>

@@ -8,14 +8,12 @@ import { Run } from './Run';
     styleUrls: ['./run-list.component.css']
 })
 export class RunListComponent {
-    runs: Run[] = [];
-    showStartIndex: number = 0;
-    showEndIndex: number = 5;
-    previousRunNb: number = 0;
-    nextRunNb: number = 0;
-
-    selectedRunId: number = 0;
-    selectedRunDate: string = "";
+    public runs: Run[] = [];
+    public showStartIndex: number = 0;
+    public showEndIndex: number = 5;
+    public previousRunNb: number = 0;
+    public nextRunNb: number = 0;
+    public selectedRunId: number = 0;
 
     constructor(private runService: RunService) { }
 
@@ -65,8 +63,8 @@ export class RunListComponent {
         }
     }
 
-    setSelectedRunId(runId: number, runDate: string) {
+    onClickSelectRunId(runId: number, runDate: string) {
+        this.runService.setSelectedRunInfo({ identifier: runId, date: runDate });
         this.selectedRunId = runId;
-        this.selectedRunDate = runDate;
     }
 }

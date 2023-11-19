@@ -5,12 +5,13 @@ import { FilterOperator } from './type/FilterOperator';
 import { Frequency } from './type/Frequency';
 import { IRunStats } from './type/IRunStats';
 import { IRunWithTimestamp } from './type/IRunWithTimestamp';
+import { RecordData } from './type/RecordData';
+import { RunInformation } from './type/RunInformation';
 
 @Injectable({
     providedIn: 'root'
 })
 export class RunService {
-    public isRunFilterChanged: Subject<boolean> = new Subject<boolean>();
     private THIRTY_DAYS_IN_SECONDS = 2592000;
     private beginningTimestampStorageKey = "timestampInSeconds";
     private beginningTimestamp: number;
@@ -18,6 +19,10 @@ export class RunService {
     private filterOperator: FilterOperator = FilterOperator.NO_OPERATOR;
     private filterDistanceInMeters: number = -1;
     private filterPaceInSeconds: number = -1;
+    private selectedRunInfo: RunInformation = { identifier: 0, date: "" };
+
+    public isRunFilterChanged: Subject<boolean> = new Subject<boolean>();
+    public isSelectedRunChanged: Subject<boolean> = new Subject<boolean>();
 
     constructor(private apiRequest: ApiRequestService) {
         let savedTimestamp = localStorage.getItem(this.beginningTimestampStorageKey);
@@ -28,7 +33,7 @@ export class RunService {
         }
     }
 
-    setRunFilter(timestampInSeconds: number, frequency: Frequency, operator: FilterOperator,
+    public setRunFilter(timestampInSeconds: number, frequency: Frequency, operator: FilterOperator,
         distanceInMeters: number, paceInSeconds: number) {
         localStorage.setItem(this.beginningTimestampStorageKey, timestampInSeconds.toString());
         this.beginningTimestamp = timestampInSeconds;
@@ -39,11 +44,28 @@ export class RunService {
         this.isRunFilterChanged.next(true);
     }
 
-    getRuns(): Observable<IRunWithTimestamp[]> {
+    public setSelectedRunInfo(runInfo: RunInformation) {
+        this.selectedRunInfo = runInfo;
+        this.isSelectedRunChanged.next(true);
+    }
+
+    public getSelectedRunInfo(): RunInformation {
+        return this.selectedRunInfo;
+    }
+
+    public getRuns(): Observable<IRunWithTimestamp[]> {
         return this.apiRequest.get<IRunWithTimestamp[]>("run/last/" + this.frequency + "/" + this.beginningTimestamp);
     }
 
-    getRunSamples(runTimestamp: number): Observable<IRunStats> {
+    public getRunSamples(runTimestamp: number): Observable<IRunStats> {
         return this.apiRequest.get<IRunStats>("run/sample/" + runTimestamp);
+    }
+
+    public getPersonalRecords(): Observable<RecordData[]> {
+        return this.apiRequest.get<RecordData[]>("run/records");
+    }
+
+    public getTrackRecords(runId: number): Observable<RecordData[]> {
+        return this.apiRequest.get<RecordData[]>("run/records/" + runId);
     }
 }

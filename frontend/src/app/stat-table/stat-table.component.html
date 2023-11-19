@@ -1,0 +1,12 @@
+<table class="main">
+    <thead>
+        <tr>
+            <th>{{title.charAt(0).toLocaleUpperCase() + title.slice(1)}} Records</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let record of records">
+            <td>{{record.distance}}: {{record.time}}</td>
+        </tr>
+    </tbody>
+</table>
