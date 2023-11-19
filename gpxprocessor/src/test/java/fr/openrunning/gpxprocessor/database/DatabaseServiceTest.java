@@ -17,16 +17,16 @@ public class DatabaseServiceTest extends GenericTest {
     @Autowired
     private DatabaseService service;
     @Autowired
-    private FrequencyRepository repository;
+    private FrequencyRepository frequencyRepository;
 
     @Test
     public void saveFrequencyStatsTest() {
         try {
-            repository.deleteAll();
+            frequencyRepository.deleteAll();
             FrequencyStatistic frequencyStatistic = new FrequencyStatistic();
             frequencyStatistic.compute(track);
             service.save(11, frequencyStatistic);
-            Iterator<Frequency> iterator = repository.findAll().iterator();
+            Iterator<Frequency> iterator = frequencyRepository.findAll().iterator();
             while (iterator.hasNext()) {
                 Frequency frequency = iterator.next();
                 Assertions.assertEquals(frequencyStatistic.getDistanceInMeters(), frequency.getTotalDistanceInMeters());
@@ -36,7 +36,7 @@ public class DatabaseServiceTest extends GenericTest {
             int weeklyCounter = 0;
             int monthlyCounter = 0;
             int yearlyCounter = 0;
-            iterator = repository.findAll().iterator();
+            iterator = frequencyRepository.findAll().iterator();
             while (iterator.hasNext()) {
                 Frequency frequency = iterator.next();
                 Assertions.assertEquals(
@@ -65,5 +65,4 @@ public class DatabaseServiceTest extends GenericTest {
             Assertions.fail();
         }
     }
-
 }

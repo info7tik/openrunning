@@ -15,6 +15,7 @@ import fr.openrunning.model.database.DatabaseObject;
 import fr.openrunning.model.database.TimestampUserPrimaryKey;
 import fr.openrunning.model.database.frequency.Frequency;
 import fr.openrunning.model.database.frequency.FrequencyRepository;
+import fr.openrunning.model.database.record.Record;
 import fr.openrunning.model.database.record.RecordsRepository;
 import fr.openrunning.model.database.samples.Sample;
 import fr.openrunning.model.database.samples.SamplesRepository;
@@ -52,6 +53,14 @@ public class DatabaseService {
                 logger.error("more than one user found from " + email);
             }
             return users.get(0).getId();
+        }
+    }
+
+    public void save(Record record) {
+        try {
+            save(recordsRepository, record);
+        } catch (Exception e) {
+            logger.info("error while saving to database", e);
         }
     }
 

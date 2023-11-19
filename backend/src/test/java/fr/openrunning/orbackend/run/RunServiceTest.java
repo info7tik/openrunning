@@ -11,6 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 import fr.openrunning.orbackend.run.json.JsonRecord;
 
 @SpringBootTest
+@Sql("/personal-record.sql")
 public class RunServiceTest {
     private int USER_ID_WITH_MULTIPLE_RECORDS = 5;
     private int USER_ID_WITH_SINGLE_RECORD = 6;
@@ -18,7 +19,6 @@ public class RunServiceTest {
     private RunService service;
 
     @Test
-    @Sql("/personal-record.sql")
     public void personalRecordTest() {
         try {
             List<JsonRecord> records = service.getPersonalRecords(USER_ID_WITH_MULTIPLE_RECORDS);
@@ -42,7 +42,6 @@ public class RunServiceTest {
     }
 
     @Test
-    @Sql("/personal-record.sql")
     public void trackRecordTest() {
         try {
             List<JsonRecord> records = service.getTrackRecords(USER_ID_WITH_MULTIPLE_RECORDS, 1461945688);

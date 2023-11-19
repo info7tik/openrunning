@@ -1,6 +1,7 @@
 package fr.openrunning.gpxprocessor.statistics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,10 +21,16 @@ public class StatisticModuleManager {
     private final Logger logger = LoggerFactory.getLogger(StatisticModuleManager.class);
     private List<StatisticModuleName> enabledModules = new LinkedList<>();
     @Getter
+    private List<Integer> recordDistancesInMeters = Arrays.asList(1000, 5000, 10000, 15000, 21100, 42195);
+    @Getter
     private List<StatisticModule<? extends DatabaseObject>> statistics = new ArrayList<>();
 
-    public void enabledStatisticModule(StatisticModuleName moduleName) {
+    public void enableStatisticModule(StatisticModuleName moduleName) {
         enabledModules.add(moduleName);
+    }
+
+    public boolean isEnabledStatisticModule(StatisticModuleName moduleName) {
+        return enabledModules.contains(moduleName);
     }
 
     public void generateStatistics(GpxTrack track) {
@@ -36,12 +43,7 @@ public class StatisticModuleManager {
                         statisticModules.add(new FrequencyStatistic());
                         break;
                     case RECORD:
-                        statisticModules.add(new RecordStatistic(1000));
-                        statisticModules.add(new RecordStatistic(5000));
-                        statisticModules.add(new RecordStatistic(10000));
-                        statisticModules.add(new RecordStatistic(15000));
-                        statisticModules.add(new RecordStatistic(21000));
-                        statisticModules.add(new RecordStatistic(42000));
+                        recordDistancesInMeters.forEach((target) -> statisticModules.add(new RecordStatistic(target)));
                         break;
                     default:
                         throw new GpxProcessorException("the module " + module + "is not loaded or does not exist");

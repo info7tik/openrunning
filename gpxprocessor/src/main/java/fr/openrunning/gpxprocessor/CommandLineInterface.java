@@ -43,7 +43,7 @@ public class CommandLineInterface implements ApplicationRunner {
         try {
             logger.info("Starting the CLI...");
             optionManager.getEnabledStatisticModules(args)
-                    .forEach(moduleName -> moduleManager.enabledStatisticModule(moduleName));
+                    .forEach(moduleName -> moduleManager.enableStatisticModule(moduleName));
             this.gpxFiles = optionManager.getGpxFiles(args);
             parseGpxFiles();
             buildStatistics();
