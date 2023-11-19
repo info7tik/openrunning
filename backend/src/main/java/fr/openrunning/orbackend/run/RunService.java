@@ -2,6 +2,7 @@ package fr.openrunning.orbackend.run;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,11 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import fr.openrunning.model.database.record.Record;
+import fr.openrunning.model.database.record.RecordsRepository;
 import fr.openrunning.model.database.samples.SamplesRepository;
 import fr.openrunning.model.database.track.TracksRepository;
 import fr.openrunning.model.type.DistanceUnit;
 import fr.openrunning.model.type.FrequencyType;
 import fr.openrunning.orbackend.common.exception.OpenRunningException;
+import fr.openrunning.orbackend.run.json.JsonRecord;
 import fr.openrunning.orbackend.run.json.JsonRun;
 import fr.openrunning.orbackend.run.json.JsonSamples;
 
@@ -23,11 +27,15 @@ public class RunService {
     private final int NUMBER_OF_LAST_RUNS = 15;
     private final TracksRepository tracksRepository;
     private final SamplesRepository samplesRepository;
+    private final RecordsRepository recordsRepository;
 
     @Autowired
-    public RunService(TracksRepository tracksRepository, SamplesRepository samplesRepository) {
+    public RunService(TracksRepository tracksRepository, SamplesRepository samplesRepository,
+            RecordsRepository recordsRepository) {
         this.tracksRepository = tracksRepository;
         this.samplesRepository = samplesRepository;
+        this.recordsRepository = recordsRepository;
+
     }
 
     public List<JsonRun> getLastRuns(int userId, FrequencyType frequency, long startTime) throws OpenRunningException {
@@ -67,6 +75,31 @@ public class RunService {
         return samples;
     }
 
-    // TODO: API to get the records
+    public List<JsonRecord> getPersonalRecords(int userId) {
+        List<JsonRecord> records = new ArrayList<>();
+        recordsRepository.getRecordDistances().forEach((distance) -> {
+            Optional<Record> record = recordsRepository.getBestRecordFromDistanceInMeters(userId, distance);
+            record.ifPresent((rec) -> records.add(buildJsonRecord(rec)));
+        });
+        return records;
+    }
+
+    public List<JsonRecord> getTrackRecords(int userId, long timestamp) {
+        List<JsonRecord> json = new ArrayList<>();
+        List<Record> records = recordsRepository.getTrackRecords(userId, timestamp);
+        records.forEach((record) -> json.add(buildJsonRecord(record)));
+        return json;
+    }
+
+    private JsonRecord buildJsonRecord(Record record) {
+        JsonRecord json = new JsonRecord();
+        json.setTimestamp(record.getTimestamp());
+        json.setDistance(record.getDistanceInMeters());
+        json.setFirstSampleIndex(record.getFirstPointIndex());
+        json.setLastSampleIndex(record.getLastPointIndex());
+        json.setTime(record.getTimeInSeconds());
+        return json;
+    }
+
     // TODO: API to get the frequencies
 }
