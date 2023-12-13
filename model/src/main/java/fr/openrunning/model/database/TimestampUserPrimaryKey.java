@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TimestampUserPrimaryKey {
     @Getter
-    private long timestamp;
+    protected long timestamp;
     @Getter
-    private int userId;
+    protected int userId;
 }

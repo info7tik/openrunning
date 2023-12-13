@@ -1,21 +1,24 @@
 package fr.openrunning.model.database.frequency;
 
 import fr.openrunning.model.database.DatabaseObject;
-import fr.openrunning.model.database.TimestampUserPrimaryKey;
+import fr.openrunning.model.database.TimestampUserFrequencyPrimaryKey;
 import fr.openrunning.model.type.FrequencyType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@IdClass(TimestampUserPrimaryKey.class)
+@IdClass(TimestampUserFrequencyPrimaryKey.class)
 @Table(name = "frequencies")
 public class Frequency extends DatabaseObject {
     @Setter
     @Getter
+    @Enumerated(EnumType.STRING)
     private FrequencyType frequency;
     @Getter
     @Setter

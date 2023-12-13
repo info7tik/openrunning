@@ -2,6 +2,7 @@ frontend/.angular/
 frontend/node_modules
 
 **/target/
+gpxprocessor/activities*
 backend/upload-dir/
 
 # IDEs and editors

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import fr.openrunning.gpxprocessor.statistics.modules.FrequencyStatistic;
 import fr.openrunning.gpxprocessor.statistics.modules.RecordStatistic;
 import fr.openrunning.model.database.DatabaseObject;
+import fr.openrunning.model.database.TimestampUserFrequencyPrimaryKey;
 import fr.openrunning.model.database.TimestampUserPrimaryKey;
 import fr.openrunning.model.database.frequency.Frequency;
 import fr.openrunning.model.database.frequency.FrequencyRepository;
@@ -23,6 +24,7 @@ import fr.openrunning.model.database.track.Track;
 import fr.openrunning.model.database.track.TracksRepository;
 import fr.openrunning.model.database.user.User;
 import fr.openrunning.model.database.user.UserRepository;
+import fr.openrunning.model.type.FrequencyType;
 
 @Service
 public class DatabaseService {
@@ -93,12 +95,12 @@ public class DatabaseService {
     public void save(int userId, FrequencyStatistic frequencyStats) {
         frequencyStats.toDatabaseObject(userId).forEach(dto -> {
             try {
-                Frequency frequency = getFrequencyOrNull(userId, dto.getTimestamp());
+                Frequency frequency = getFrequencyOrNull(userId, dto.getTimestamp(), dto.getFrequency());
                 if (frequency == null) {
-                    save(frequencyRepository, dto);
+                    frequencyRepository.save(dto);
                 } else {
                     frequency.aggregate(dto);
-                    save(frequencyRepository, frequency);
+                    frequencyRepository.save(dto);
                 }
             } catch (Exception e) {
                 logger.info("error while saving to database", e);
@@ -106,8 +108,8 @@ public class DatabaseService {
         });
     }
 
-    private Frequency getFrequencyOrNull(int userId, long timestamp) {
-        TimestampUserPrimaryKey primaryKey = new TimestampUserPrimaryKey(timestamp, userId);
+    private Frequency getFrequencyOrNull(int userId, long timestamp, FrequencyType frequencyType) {
+        TimestampUserFrequencyPrimaryKey primaryKey = new TimestampUserFrequencyPrimaryKey(timestamp, userId, frequencyType);
         Optional<Frequency> frequency = frequencyRepository.findById(primaryKey);
         if (frequency.isPresent()) {
             return frequency.get();
@@ -115,6 +117,7 @@ public class DatabaseService {
             return null;
         }
     }
+
 
     private <T extends DatabaseObject> void save(
             CrudRepository<T, TimestampUserPrimaryKey> repository, T objectToSave) {
