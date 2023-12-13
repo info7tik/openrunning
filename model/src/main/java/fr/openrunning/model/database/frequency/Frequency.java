@@ -29,8 +29,13 @@ public class Frequency extends DatabaseObject {
     @Column(name = "time_s")
     private long totalTimeInSeconds;
 
-    public void aggregate(Frequency frequency) {
-        totalDistanceInMeters += frequency.totalDistanceInMeters;
-        totalTimeInSeconds += frequency.totalTimeInSeconds;
+    public Frequency aggregate(Frequency frequency) {
+        Frequency aggregated = new Frequency();
+        aggregated.setTimestamp(timestamp);
+        aggregated.setUserId(userId);
+        aggregated.setFrequency(frequency.getFrequency());
+        aggregated.setTotalTimeInSeconds(totalTimeInSeconds + frequency.totalTimeInSeconds);
+        aggregated.setTotalDistanceInMeters(totalDistanceInMeters + frequency.totalDistanceInMeters);
+        return aggregated;
     }
 }

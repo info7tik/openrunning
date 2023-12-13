@@ -17,10 +17,10 @@ public class FrequencyTest extends GenericTest {
             frequencyStatistic.compute(track);
             Assertions.assertEquals(9415, frequencyStatistic.getDistanceInMeters());
             Assertions.assertEquals(2772L, frequencyStatistic.getTimeInSeconds());
-            Assertions.assertEquals(1411423210L, frequencyStatistic.getDayTimestamp());
-            Assertions.assertEquals(1411336820L, frequencyStatistic.getWeekTimestamp());
-            Assertions.assertEquals(1409522430L, frequencyStatistic.getMonthTimestamp());
-            Assertions.assertEquals(1388530840L, frequencyStatistic.getYearTimestamp());
+            Assertions.assertEquals(1411423200L, frequencyStatistic.getDayTimestamp());
+            Assertions.assertEquals(1411336800L, frequencyStatistic.getWeekTimestamp());
+            Assertions.assertEquals(1409522400L, frequencyStatistic.getMonthTimestamp());
+            Assertions.assertEquals(1388530800L, frequencyStatistic.getYearTimestamp());
         } catch (Exception e) {
             e.printStackTrace();
             Assertions.fail();

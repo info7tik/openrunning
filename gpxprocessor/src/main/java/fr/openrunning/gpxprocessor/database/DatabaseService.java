@@ -99,8 +99,7 @@ public class DatabaseService {
                 if (frequency == null) {
                     frequencyRepository.save(dto);
                 } else {
-                    frequency.aggregate(dto);
-                    frequencyRepository.save(dto);
+                    frequencyRepository.save(frequency.aggregate(dto));
                 }
             } catch (Exception e) {
                 logger.info("error while saving to database", e);
@@ -109,7 +108,8 @@ public class DatabaseService {
     }
 
     private Frequency getFrequencyOrNull(int userId, long timestamp, FrequencyType frequencyType) {
-        TimestampUserFrequencyPrimaryKey primaryKey = new TimestampUserFrequencyPrimaryKey(timestamp, userId, frequencyType);
+        TimestampUserFrequencyPrimaryKey primaryKey = new TimestampUserFrequencyPrimaryKey(timestamp, userId,
+                frequencyType);
         Optional<Frequency> frequency = frequencyRepository.findById(primaryKey);
         if (frequency.isPresent()) {
             return frequency.get();
@@ -117,7 +117,6 @@ public class DatabaseService {
             return null;
         }
     }
-
 
     private <T extends DatabaseObject> void save(
             CrudRepository<T, TimestampUserPrimaryKey> repository, T objectToSave) {

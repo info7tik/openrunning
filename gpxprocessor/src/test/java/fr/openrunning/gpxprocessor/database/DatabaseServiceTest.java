@@ -27,6 +27,7 @@ public class DatabaseServiceTest extends GenericTest {
             frequencyStatistic.compute(track);
             service.save(11, frequencyStatistic);
             Iterator<Frequency> iterator = frequencyRepository.findAll().iterator();
+            Assertions.assertTrue(iterator.hasNext());
             while (iterator.hasNext()) {
                 Frequency frequency = iterator.next();
                 Assertions.assertEquals(frequencyStatistic.getDistanceInMeters(), frequency.getTotalDistanceInMeters());
