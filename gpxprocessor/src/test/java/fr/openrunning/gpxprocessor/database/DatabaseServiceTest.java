@@ -6,11 +6,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import fr.openrunning.gpxprocessor.GenericTest;
 import fr.openrunning.gpxprocessor.statistics.modules.FrequencyStatistic;
 import fr.openrunning.model.database.frequency.Frequency;
 import fr.openrunning.model.database.frequency.FrequencyRepository;
+import fr.openrunning.model.database.track.TracksRepository;
 
 @SpringBootTest
 public class DatabaseServiceTest extends GenericTest {
@@ -18,13 +20,24 @@ public class DatabaseServiceTest extends GenericTest {
     private DatabaseService service;
     @Autowired
     private FrequencyRepository frequencyRepository;
+    @Autowired
+    private TracksRepository tracksRepository;
+
+    @Test
+    @Sql({ "/tracks-data.sql" })
+    void isFileAlreadyParsedTest() {
+        long nbFiles = tracksRepository.count();
+        Assertions.assertEquals(2, nbFiles);
+        Assertions.assertTrue(service.isFileAlreadyParsed("first_file.gpx"));
+        Assertions.assertFalse(service.isFileAlreadyParsed("unknown_file.gpx"));
+    }
 
     @Test
     public void saveFrequencyStatsTest() {
         try {
             frequencyRepository.deleteAll();
             FrequencyStatistic frequencyStatistic = new FrequencyStatistic();
-            frequencyStatistic.compute(track);
+            frequencyStatistic.compute(track1);
             service.save(11, frequencyStatistic);
             Iterator<Frequency> iterator = frequencyRepository.findAll().iterator();
             Assertions.assertTrue(iterator.hasNext());

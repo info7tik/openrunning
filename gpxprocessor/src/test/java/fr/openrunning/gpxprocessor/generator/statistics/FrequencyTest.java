@@ -14,7 +14,7 @@ public class FrequencyTest extends GenericTest {
     public void computeTest() {
         try {
             FrequencyStatistic frequencyStatistic = new FrequencyStatistic();
-            frequencyStatistic.compute(track);
+            frequencyStatistic.compute(track1);
             Assertions.assertEquals(9415, frequencyStatistic.getDistanceInMeters());
             Assertions.assertEquals(2772L, frequencyStatistic.getTimeInSeconds());
             Assertions.assertEquals(1411423200L, frequencyStatistic.getDayTimestamp());

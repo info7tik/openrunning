@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import fr.openrunning.gpxprocessor.statistics.modules.FrequencyStatistic;
 import fr.openrunning.gpxprocessor.statistics.modules.RecordStatistic;
+import fr.openrunning.gpxprocessor.track.GpxSample;
+import fr.openrunning.gpxprocessor.track.GpxTrack;
 import fr.openrunning.model.database.DatabaseObject;
 import fr.openrunning.model.database.TimestampUserFrequencyPrimaryKey;
 import fr.openrunning.model.database.TimestampUserPrimaryKey;
@@ -58,11 +60,29 @@ public class DatabaseService {
         }
     }
 
+    public boolean isFileAlreadyParsed(String filename) {
+        return !tracksRepository.findByFilename(filename).isEmpty();
+    }
+
+    public void saveTrackWithSamples(int userId, GpxTrack gpxTrack) {
+        try {
+            save(gpxTrack.toDatabaseObject(userId));
+            List<GpxSample> trackSamples = gpxTrack.getSamples();
+            for (int sampleIndex = 0; sampleIndex < trackSamples.size(); sampleIndex++) {
+                GpxSample currentSample = trackSamples.get(sampleIndex);
+                save(currentSample.toDatabaseObject(userId, sampleIndex));
+            }
+        } catch (Exception e) {
+            logger.error("error while saving track " + gpxTrack.getFilename() + " with sample", e);
+        }
+
+    }
+
     public void save(Record record) {
         try {
             save(recordsRepository, record);
         } catch (Exception e) {
-            logger.info("error while saving to database", e);
+            logger.error("error while saving to database", e);
         }
     }
 
@@ -70,7 +90,7 @@ public class DatabaseService {
         try {
             save(tracksRepository, track);
         } catch (Exception e) {
-            logger.info("error while saving to database", e);
+            logger.error("error while saving to database", e);
         }
     }
 
@@ -78,7 +98,7 @@ public class DatabaseService {
         try {
             save(samplesRepository, sample);
         } catch (Exception e) {
-            logger.info("error while saving to database", e);
+            logger.error("error while saving to database", e);
         }
     }
 
@@ -87,7 +107,7 @@ public class DatabaseService {
             try {
                 save(recordsRepository, dto);
             } catch (Exception e) {
-                logger.info("error while saving to database", e);
+                logger.error("error while saving to database", e);
             }
         });
     }
@@ -102,7 +122,7 @@ public class DatabaseService {
                     frequencyRepository.save(frequency.aggregate(dto));
                 }
             } catch (Exception e) {
-                logger.info("error while saving to database", e);
+                logger.error("error while saving to database", e);
             }
         });
     }

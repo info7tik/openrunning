@@ -23,7 +23,7 @@ public class RecordTest extends GenericTest {
     public void computeTest() {
         try {
             RecordStatistic record = new RecordStatistic(4000);
-            record.compute(track);
+            record.compute(track1);
             Assertions.assertEquals(1192, record.getBestTimeInSeconds());
             Assertions.assertEquals(4022, record.getBestDistanceInMeters());
         } catch (Exception e) {

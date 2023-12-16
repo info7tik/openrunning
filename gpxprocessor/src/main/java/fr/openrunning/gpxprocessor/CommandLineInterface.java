@@ -12,11 +12,12 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import fr.openrunning.gpxprocessor.database.DatabaseService;
-import fr.openrunning.gpxprocessor.gpxparser.GpxParser;
+import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
+import fr.openrunning.gpxprocessor.gpxparser.GpxTrackBuilder;
 import fr.openrunning.gpxprocessor.statistics.StatisticModuleManager;
+import fr.openrunning.gpxprocessor.statistics.StatisticModuleName;
 import fr.openrunning.gpxprocessor.statistics.modules.FrequencyStatistic;
 import fr.openrunning.gpxprocessor.statistics.modules.RecordStatistic;
-import fr.openrunning.gpxprocessor.track.GpxSample;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 
 @Component
@@ -24,15 +25,17 @@ public class CommandLineInterface implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(CommandLineInterface.class);
     private final CommandLineOptionManager optionManager;
     private final StatisticModuleManager moduleManager;
+    private final GpxTrackBuilder trackBuilder;
     private final DatabaseService databaseService;
     private List<File> gpxFiles;
     private List<GpxTrack> gpxTracks;
 
     @Autowired
-    public CommandLineInterface(
-            CommandLineOptionManager optionManager, StatisticModuleManager moduleManager, DatabaseService service) {
+    public CommandLineInterface(CommandLineOptionManager optionManager, StatisticModuleManager moduleManager,
+            GpxTrackBuilder trackBuilder, DatabaseService service) {
         this.optionManager = optionManager;
         this.moduleManager = moduleManager;
+        this.trackBuilder = trackBuilder;
         this.databaseService = service;
         this.gpxFiles = new LinkedList<>();
         this.gpxTracks = new LinkedList<>();
@@ -42,13 +45,15 @@ public class CommandLineInterface implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         try {
             logger.info("Starting the CLI...");
-            optionManager.getEnabledStatisticModules(args)
-                    .forEach(moduleName -> moduleManager.enableStatisticModule(moduleName));
+            moduleManager.enableStatisticModule(StatisticModuleName.RECORD);
+            moduleManager.enableStatisticModule(StatisticModuleName.FREQUENCY);
             this.gpxFiles = optionManager.getGpxFiles(args);
             parseGpxFiles();
             buildStatistics();
-            if (optionManager.mustSaveToDatabase(args)) {
-                int userId = optionManager.getUserIdFromEmail(args);
+            int userId = databaseService.getUserIdFromEmail(optionManager.getUserEmail(args));
+            if (userId == -1) {
+                throw new GpxProcessorException("failed to find the user id from the database");
+            } else {
                 saveToDatabase(userId);
             }
         } catch (Exception e) {
@@ -61,12 +66,16 @@ public class CommandLineInterface implements ApplicationRunner {
         gpxFiles.forEach((file) -> {
             logger.info("Parsing " + file.getAbsolutePath());
             try {
-                GpxParser parser = new GpxParser();
-                GpxTrack track = parser.parse(file);
-                track.computeTotalDistanceAndTime();
-                track.computeSamples();
-                gpxTracks.add(track);
-                logger.info(track.buildTrackInformation());
+                if (databaseService.isFileAlreadyParsed(file.getName())) {
+                    logger.error("File " + file.getName() + " have already been parsed! "
+                            + "Ignore this file for the rest of the workflow.");
+                } else {
+                    GpxTrack track = trackBuilder.buildGpxTrack(file);
+                    track.computeTotalDistanceAndTime();
+                    track.computeSamples();
+                    gpxTracks.add(track);
+                    logger.info(track.buildTrackInformation());
+                }
             } catch (Exception e) {
                 logger.error("error while parsing '" + file.getAbsolutePath() + "'", e);
             }
@@ -87,12 +96,7 @@ public class CommandLineInterface implements ApplicationRunner {
     private void saveToDatabase(final int userId) {
         gpxTracks.forEach((gpxTrack) -> {
             try {
-                databaseService.save(gpxTrack.toDatabaseObject(userId));
-                List<GpxSample> trackSamples = gpxTrack.getSamples();
-                for (int sampleIndex = 0; sampleIndex < trackSamples.size(); sampleIndex++) {
-                    GpxSample currentSample = trackSamples.get(sampleIndex);
-                    databaseService.save(currentSample.toDatabaseObject(userId, sampleIndex));
-                }
+                databaseService.saveTrackWithSamples(userId, gpxTrack);
             } catch (Exception e) {
                 logger.error("can not save data from " + gpxTrack.getFilename(), e);
             }

@@ -13,4 +13,6 @@ import fr.openrunning.model.database.TimestampUserPrimaryKey;
 public interface TracksRepository extends CrudRepository<Track, TimestampUserPrimaryKey> {
     @Query(value = "SELECT t FROM Track t WHERE t.userId = ?1 AND t.timestamp >= ?2")
     List<Track> findLastRuns(int userId, long startTimestamp, Pageable pageable);
+
+    List<Track> findByFilename(String filename);
 }
