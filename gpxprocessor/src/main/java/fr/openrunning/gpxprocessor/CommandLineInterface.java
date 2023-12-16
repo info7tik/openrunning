@@ -1,7 +1,7 @@
 package fr.openrunning.gpxprocessor;
 
 import java.io.File;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -27,8 +27,6 @@ public class CommandLineInterface implements ApplicationRunner {
     private final StatisticModuleManager moduleManager;
     private final GpxTrackBuilder trackBuilder;
     private final DatabaseService databaseService;
-    private List<File> gpxFiles;
-    private List<GpxTrack> gpxTracks;
 
     @Autowired
     public CommandLineInterface(CommandLineOptionManager optionManager, StatisticModuleManager moduleManager,
@@ -37,32 +35,30 @@ public class CommandLineInterface implements ApplicationRunner {
         this.moduleManager = moduleManager;
         this.trackBuilder = trackBuilder;
         this.databaseService = service;
-        this.gpxFiles = new LinkedList<>();
-        this.gpxTracks = new LinkedList<>();
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         try {
             logger.info("Starting the CLI...");
-            moduleManager.enableStatisticModule(StatisticModuleName.RECORD);
-            moduleManager.enableStatisticModule(StatisticModuleName.FREQUENCY);
-            this.gpxFiles = optionManager.getGpxFiles(args);
-            parseGpxFiles();
-            buildStatistics();
             int userId = databaseService.getUserIdFromEmail(optionManager.getUserEmail(args));
             if (userId == -1) {
                 throw new GpxProcessorException("failed to find the user id from the database");
-            } else {
-                saveToDatabase(userId);
             }
+            moduleManager.enableStatisticModule(StatisticModuleName.RECORD);
+            moduleManager.enableStatisticModule(StatisticModuleName.FREQUENCY);
+            List<File> gpxFiles = optionManager.getGpxFiles(args);
+            List<GpxTrack> gpxTracks = parseGpxFiles(gpxFiles);
+            buildStatistics(gpxTracks);
+            saveTrackAndStatistics(userId, gpxTracks);
         } catch (Exception e) {
             logger.error("error while parsing GPX files", e);
             System.out.println("ERROR: " + e);
         }
     }
 
-    private void parseGpxFiles() {
+    private List<GpxTrack> parseGpxFiles(List<File> gpxFiles) {
+        List<GpxTrack> gpxTracks = new ArrayList<>();
         gpxFiles.forEach((file) -> {
             logger.info("Parsing " + file.getAbsolutePath());
             try {
@@ -80,9 +76,10 @@ public class CommandLineInterface implements ApplicationRunner {
                 logger.error("error while parsing '" + file.getAbsolutePath() + "'", e);
             }
         });
+        return gpxTracks;
     }
 
-    private void buildStatistics() {
+    private void buildStatistics(List<GpxTrack> gpxTracks) {
         gpxTracks.forEach((track) -> {
             logger.info("Statistics for " + track.getFilename());
             try {
@@ -93,7 +90,7 @@ public class CommandLineInterface implements ApplicationRunner {
         });
     }
 
-    private void saveToDatabase(final int userId) {
+    private void saveTrackAndStatistics(final int userId, List<GpxTrack> gpxTracks) {
         gpxTracks.forEach((gpxTrack) -> {
             try {
                 databaseService.saveTrackWithSamples(userId, gpxTrack);
