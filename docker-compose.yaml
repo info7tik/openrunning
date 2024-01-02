@@ -1,12 +1,28 @@
 version: '3'
 services:
 
+  backend-compiler:
+    # Run this container with 'UID_GID="$(id -u):$(id -g)" docker-compose up backend-compiler'
+    build:
+      context: .
+      dockerfile: docker/backend-compiler.dockerfile
+    environment:
+      DB_USER: ${E_DB_USER}
+      DB_ROOT_PASSWORD: ${E_DB_ROOT_PASSWORD}
+      DB_DATABASE: ${E_DB_DATABASE}
+      FRONTEND_HOST: ${E_FRONTEND_HOST}
+      FRONTEND_PORT: ${E_FRONTEND_PORT}
+      BACKEND_KEY: ${E_BACKEND_KEY}
+      BACKEND_SALT: ${E_BACKEND_SALT}
+    volumes:
+      - ./dist:/root/jars
+
   database:
     image: mariadb:11.3-rc
     environment:
-      MARIADB_USER: dbuser
-      MARIADB_ROOT_PASSWORD: dbroot
-      MARIADB_DATABASE: openrunning
+      MARIADB_USER: ${E_DB_USER}
+      MARIADB_ROOT_PASSWORD: ${E_DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${E_DB_DATABASE}
     volumes:
       - ./db_data:/var/lib/mysql
     ports:

@@ -1,0 +1,16 @@
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+spring.jpa.properties.hibernate.globally_quoted_identifiers=true
+spring.jpa.show-sql=false
+
+spring.datasource.url=jdbc:mariadb://database:3306/{{ DB_DATABASE }}?allowPublicKeyRetrieval=true&useSSL=false
+spring.datasource.username=root
+spring.datasource.password={{ DB_ROOT_PASSWORD }}
+spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
+
+# URL used to build the Allow-Origin header
+frontend.url=http://{{ FRONTEND_HOST }}:{{ FRONTEND_PORT }}
+# Key with 16 characters length used to generate authentication tokens
+security.key={{ BACKEND_KEY }}
+# Salt used to generate authentication tokens
+security.salt={{ BACKEND_SALT }}
