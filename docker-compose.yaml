@@ -1,0 +1,32 @@
+version: '3'
+services:
+
+  database:
+    image: mariadb:11.3-rc
+    environment:
+      MARIADB_USER: dbuser
+      MARIADB_ROOT_PASSWORD: dbroot
+      MARIADB_DATABASE: openrunning
+    volumes:
+      - ./db_data:/var/lib/mysql
+    ports:
+      - 3333:3306
+    restart: always
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.dockerfile
+    depends_on:
+      - database
+    restart: always
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.dockerfile
+    depends_on:
+      - backend
+    ports:
+      - 8000:80
+    restart: always

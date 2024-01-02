@@ -1,9 +1,12 @@
 frontend/.angular/
 frontend/node_modules
+frontend/dist
 
 **/target/
 gpxprocessor/activities*
 backend/upload-dir/
+
+db_data
 
 # IDEs and editors
 .idea/
