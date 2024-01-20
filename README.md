@@ -1,5 +1,8 @@
 # OpenRunning: GPX Manager for Running Data
 
+OpenRunning is an application that generates statistics about running session. Users upload their GPX files and visualize
+graphs with speed, length, pace, etc.
+
 1. [Use the Application](#use-the-application)
 2. [Running the application](#running-the-application)
   * [First Run](#first-run)
