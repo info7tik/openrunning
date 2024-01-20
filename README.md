@@ -1,5 +1,17 @@
 # OpenRunning: GPX Manager for Running Data
 
+1. [Use the Application](#use-the-application)
+2. [Running the application](#running-the-application)
+2.1. [First Run](#first-run)
+2.2. [Check your Run](#check-your-run)
+3. [Architecture of the Application](#architecture-of-the-application)
+4. [Docker Containers](#docker-container)
+4.1. [Docker Container Connection](#docker-container-connection)
+4.2. [Docker Container Configuration](#docker-container-configuration)
+5. [Developer Environment Configuration](#developer-environment-configuration)
+5.1. [Backend](#backend)
+5.2. [Frontend](#frontend)
+
 ## Use the Application
 Once the [application is running](#running-the-application), we are ready to use it!
 
@@ -110,6 +122,10 @@ docker compose logs --follow backend
 docker compose logs --follow frontend
 ```
 
+## Architecture of the Application
+**COMING SOON**
+
+## Docker Containers
 ### Docker Container Connection
 To connect to the containers, use the following command **from the `openrunning` directory**:
 ```
@@ -168,9 +184,6 @@ By default, the `backend API` uses the port `8080` of your machine (localhost). 
     restart: always
 ```
 By default, the `frontend web application` uses the port `8000` of your machine (localhost). Change this value to change the port.
-
-## Architecture of the Application
-**COMING SOON**
 
 ## Developer Environment Configuration
 The easy setup is to run the application on your local system without the containers. In the following configuration, we
