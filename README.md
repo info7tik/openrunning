@@ -2,15 +2,15 @@
 
 1. [Use the Application](#use-the-application)
 2. [Running the application](#running-the-application)
-2.1. [First Run](#first-run)
-2.2. [Check your Run](#check-your-run)
+  * [First Run](#first-run)
+  * [Check your Run](#check-your-run)
 3. [Architecture of the Application](#architecture-of-the-application)
 4. [Docker Containers](#docker-container)
-4.1. [Docker Container Connection](#docker-container-connection)
-4.2. [Docker Container Configuration](#docker-container-configuration)
+  * [Docker Container Connection](#docker-container-connection)
+  * [Docker Container Configuration](#docker-container-configuration)
 5. [Developer Environment Configuration](#developer-environment-configuration)
-5.1. [Backend](#backend)
-5.2. [Frontend](#frontend)
+  * [Backend](#backend)
+  * [Frontend](#frontend)
 
 ## Use the Application
 Once the [application is running](#running-the-application), we are ready to use it!
