@@ -135,6 +135,8 @@ The following diagram shows the process of calculating statistics from the GPX f
 
 ![architecture of the application](./images/architecture.png)
 
+Thanks to [sequencediagram.org](https://sequencediagram.org/) to provide an easy and efficient drawing tool!
+
 ## Docker Containers
 ### Docker Container Connection
 To connect to the containers, use the following command **from the `openrunning` directory**:
