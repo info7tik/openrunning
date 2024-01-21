@@ -7,7 +7,7 @@ graphs with speed, length, pace, etc.
 2. [Running the application](#running-the-application)
   * [First Run](#first-run)
   * [Check your Run](#check-your-run)
-3. [Architecture of the Application](#architecture-of-the-application)
+3. [Application Architecture](#application-architecture)
 4. [Docker Containers](#docker-container)
   * [Docker Container Connection](#docker-container-connection)
   * [Docker Container Configuration](#docker-container-configuration)
@@ -125,8 +125,15 @@ docker compose logs --follow backend
 docker compose logs --follow frontend
 ```
 
-## Architecture of the Application
-**COMING SOON**
+## Application Architecture
+The following diagram shows the process of calculating statistics from the GPX files:
+* The `Frontend` box is the frontend container.
+* The `Backend (orbackend.jar)` box represents the backend API that belongs to the backend container. This API is started by executing `orbackend.jar`.
+* The `Backend (gpxprocessor.jar)` box represents the application that reads the downloaded GPX files. This application also belongs to the backend container.
+   It is started by executing `orbackend.jar`.
+* The `Database` box represents the database container.
+
+![architecture of the application](./images/architecture.png)
 
 ## Docker Containers
 ### Docker Container Connection
