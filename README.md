@@ -129,8 +129,8 @@ docker compose logs --follow frontend
 The following diagram shows the process of calculating statistics from the GPX files:
 * The `Frontend` box is the frontend container.
 * The `Backend (orbackend.jar)` box represents the backend API that belongs to the backend container. This API is started by executing `orbackend.jar`.
-* The `Backend (gpxprocessor.jar)` box represents the application that reads the downloaded GPX files. This application also belongs to the backend container.
-   It is started by executing `orbackend.jar`.
+* The `Backend (gpxprocessor.jar)` box represents the application that reads the downloaded GPX files. This application belongs to the backend container.
+   It is started by executing `gpxprocessor.jar`.
 * The `Database` box represents the database container.
 
 ![architecture of the application](./images/architecture.png)
