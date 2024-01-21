@@ -2,9 +2,10 @@
 
 title Compute statistics from GPX files
 
-note over Frontend,Backend (orbackend.jar):Frontend Container Port: 8000 ; Backend Container Port: 8080 ; Database Port : 3333.
-
 Frontend->Backend (orbackend.jar):Users send GPX files\nfrom the web interface
+
+note over Backend (orbackend.jar),Backend (gpxprocessor.jar):orbackend.jar and gpxprocessor.jar are two Java\n applications running on the Backend container.
+
 Backend (orbackend.jar)->Database:Register the filename with the UPLOADING state
 Backend (orbackend.jar)->Backend (orbackend.jar): Save the file to the local storage
 Backend (orbackend.jar)->Database: Set the state of the file to CHECKING
@@ -12,9 +13,9 @@ Backend (orbackend.jar)->Backend (gpxprocessor.jar): Start the JAR gpxprocessor
 Frontend<-Backend (orbackend.jar): Acknowledge the upload is done
 
 Backend (gpxprocessor.jar)->Database: Set the gpxprocessor status to RUNNING
-Backend (gpxprocessor.jar)<-Database: Retrieve the CHECKING files
+Backend (gpxprocessor.jar)->Database: Retrieve the CHECKING files
 Backend (gpxprocessor.jar)->Backend (gpxprocessor.jar):Check the GPX files syntax
-Backend (orbackend.jar)->Database: Set the state of the files to PROCESSING
+Backend (gpxprocessor.jar)->Database: Set the state of the files to PROCESSING
 Backend (gpxprocessor.jar)->Database:Caculate the run statistics from the files and save them
 Backend (gpxprocessor.jar)->Database:Set the state of the files to COMPLETED (or FAILED)
 Backend (gpxprocessor.jar)->Database: Set the gpxprocessor status to STOPPED
