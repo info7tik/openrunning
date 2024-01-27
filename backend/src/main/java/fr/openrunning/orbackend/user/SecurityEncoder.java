@@ -23,21 +23,25 @@ import fr.openrunning.orbackend.common.exception.OpenRunningException;
 public class SecurityEncoder {
     private static Logger logger = LoggerFactory.getLogger(SecurityEncoder.class);
 
-    @Value("${security.key}")
-    private String signingKey;
-    @Value("${security.salt}")
-    private String salt;
     private final String ALGORITHM = "AES";
-    private final String separator = "#";
+    private final String SEPARATOR = "#";
+
+    private String signingKey;
+    private String salt;
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     private SecretKeySpec secretKey = null;
     private byte[] key;
+
+    public SecurityEncoder(@Value("${security.key}") String signinKey, @Value("${security.salt}") String salt) {
+        this.signingKey = signinKey;
+        this.salt = salt;
+    }
 
     public String generateToken(User userInformation) throws OpenRunningException {
         try {
             LocalDateTime oneDayLater = LocalDateTime.now().plusDays(1);
             return encrypt(
-                    dateFormatter.format(oneDayLater) + separator + userInformation.getEmail() + separator + salt);
+                    dateFormatter.format(oneDayLater) + SEPARATOR + userInformation.getEmail() + SEPARATOR + salt);
         } catch (Exception e) {
             logger.error("error while generating token", e);
             throw buildOpenRunningExceptionForInvalidToken();
@@ -46,7 +50,7 @@ public class SecurityEncoder {
 
     public String generateEncodedPassword(String plainPassword) throws OpenRunningException {
         try {
-            return encrypt(salt + separator + plainPassword);
+            return encrypt(salt + SEPARATOR + plainPassword);
         } catch (Exception e) {
             logger.error("error while generating password", e);
             throw new OpenRunningException("error while generating password", e);
@@ -69,7 +73,7 @@ public class SecurityEncoder {
     public void checkToken(String userToken) throws OpenRunningException {
         try {
             String plainValue = decrypt(userToken);
-            String date = plainValue.split(separator)[0];
+            String date = plainValue.split(SEPARATOR)[0];
             LocalDateTime expirationDate = LocalDateTime.parse(date, dateFormatter);
             if (LocalDateTime.now().isAfter(expirationDate)) {
                 logger.warn("error while checking token: expired token");

@@ -35,12 +35,12 @@ public class UserService {
     public void signup(JsonLoginInformation loginInformation) throws OpenRunningException {
         List<User> existingUsers = repository.findByEmail(loginInformation.getEmail());
         if (existingUsers.isEmpty()) {
+            storageService.createUserDirectory(loginInformation.getEmail());
             User newUser = new User();
             newUser.setEmail(loginInformation.getEmail());
             String encodedPassword = securityEncoder.generateEncodedPassword(loginInformation.getPassword());
             newUser.setPassword(encodedPassword);
             repository.save(newUser);
-            storageService.createUserDirectory(loginInformation.getEmail());
             logger.info("New account for user '" + loginInformation.getEmail() + "'");
         } else {
             String errorMessage = "signup failure: email '" + loginInformation.getEmail() + "' already exists";

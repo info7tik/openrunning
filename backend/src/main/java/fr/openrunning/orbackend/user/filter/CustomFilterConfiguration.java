@@ -15,6 +15,6 @@ public class CustomFilterConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenFilter)
-                .addPathPatterns("/**").excludePathPatterns("/user/sign*");
+                .addPathPatterns("/**").excludePathPatterns("/user/sign*", "/user/test");
     }
 }
