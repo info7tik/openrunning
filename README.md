@@ -51,22 +51,14 @@ The easy way to start the application is to use [docker](https://docs.docker.com
 To run the application without docker, see the section [Developer Environment Configuration](#developer-environment-configuration).
 
 - install [docker](https://docs.docker.com/engine/install/)
-- Clone this repository
+- clone this repository
 ```
 https://github.com/info7tik/openrunning.git
 ```
-- From the sources directory, compile the sources with docker
+- start the application with docker compose
 ```
 cd openrunning
-docker compose run --rm backend-compiler
-```
-This command will start a container including `java` and `maven` to build the two projects `backend` and `gpxprocessor`.
-
-The result is two files with the `jar` extension that should belong to the `dist` directory. These two files will be
-copied to the `backend` docker container during the next step.
-- Start the application with docker
-```
-docker compose up -d frontend
+docker compose up -d
 ```
 This command should start three containers:
 * the `database` container contains the mariaDB database. It stores all the information about the GPX files.
@@ -74,9 +66,6 @@ This command should start three containers:
   database.
 * the `frontend` container contains the web application that it binds to the port 8000.
 Open the URL [http://localhost:8000](http://localhost:8000) to connect to the application.
-
-**NOTE**: If you want to use the generated JAR, you have to change the rights of the files with the command
-`sudo chown -R $USER.$USER ./dist`.
 
 ### Check your Run
 #### Database Check
