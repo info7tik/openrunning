@@ -137,7 +137,6 @@ The container names are: `frontend`, `backend`, `database`. These names are defi
 To list the running containers, use `docker ps`.
 
 The containers are based on Linux debian. See the exact version of the operating system in the docker files:
-* [backend-compiler configuration](./docker/backend-compiler.dockerfile)
 * [backend configuration](./docker/backend.dockerfile)
 * [frontend configuration](./docker/frontend.dockerfile)
 
