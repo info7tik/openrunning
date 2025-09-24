@@ -64,8 +64,8 @@ This command should start three containers:
 * the `database` container contains the mariaDB database. It stores all the information about the GPX files.
 * the `backend` container contains the API of the application. It stores the GPX files and process them to fill the
   database.
-* the `frontend` container contains the web application that it binds to the port 8000.
-Open the URL [http://localhost:8000](http://localhost:8000) to connect to the application.
+* the `frontend` container contains the web application that it binds to the port 4200.
+Open the URL [http://localhost:4200](http://localhost:4200) to connect to the application.
 
 ### Check your Run
 #### Database Check
@@ -101,7 +101,7 @@ curl http://localhost:8080/user/test
 The response should be `{ "message": "That works!" }`.
 
 #### Frontend Check
-* Open the URL [http://localhost:8000](http://localhost:8000) with your favorite navigator. You should see the ugly login
+* Open the URL [http://localhost:4200](http://localhost:4200) with your favorite web client. You should see the ugly login
 login page (maybe it looks better now):
 
 ![login page](./images/login_page.png)
@@ -180,10 +180,10 @@ By default, the `backend API` uses the port `8080` of your machine (localhost). 
     depends_on:
       - backend
     ports:
-      - 8000:80
+      - 4200:80
     restart: always
 ```
-By default, the `frontend web application` uses the port `8000` of your machine (localhost). Change this value to change the port.
+By default, the `frontend web application` uses the port `4200` of your machine (localhost). Change this value to change the port.
 
 ## Developer Environment Configuration
 The easy setup is to run the application on your local system without the containers. In the following configuration, we
@@ -232,11 +232,6 @@ spring.datasource.url=jdbc:mariadb://127.0.0.1:3333/openrunning?allowPublicKeyRe
   ```
 
 ### Frontend
-* Configure the connection to the `backend`:
-  * Edit `frontend/src/app/api-request.service.ts` and set the `API_URL` variable to `localhost:8080`:
-  ```
-  private API_URL: string = 'http://localhost:8080';
-  ```
 * Run the `frontend` module
 ```
 cd frontend
