@@ -87,11 +87,30 @@ public class UserService {
         }
     }
 
-    public int getUserId(String token) throws OpenRunningException {
+    public int getUserId(String authorizationHeader) throws OpenRunningException {
+        String token = extractToken(authorizationHeader);
         if (tokens.containsKey(token)) {
             return tokens.get(token);
         } else {
             throw new OpenRunningException("error while getting user id with unknown token");
+        }
+    }
+
+    private String extractToken(String authorizationHeader) throws OpenRunningException {
+        String[] information = authorizationHeader.split(" ");
+        if (information.length == 2) {
+            return information[1];
+        } else {
+            throw new OpenRunningException("error while extracting token");
+        }
+    }
+
+    public String getUserEmail(int userId) throws OpenRunningException {
+        Optional<User> user = this.repository.findById(userId);
+        if (user.isPresent()) {
+            return user.get().getEmail();
+        } else {
+            throw new OpenRunningException("no user with the id '" + userId + "'");
         }
     }
 }

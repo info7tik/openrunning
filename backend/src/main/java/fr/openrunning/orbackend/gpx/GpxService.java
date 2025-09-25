@@ -49,12 +49,12 @@ public class GpxService {
         }
     }
 
-    public void store(MultipartFile file, String email) throws OpenRunningException {
+    public void store(MultipartFile file, int userId, String email) throws OpenRunningException {
         try {
             if (file.isEmpty()) {
                 throw new OpenRunningException("can not store empty files");
             }
-            GpxFile gpxFile = createDatabaseEntry(file);
+            GpxFile gpxFile = createGpxFile(file, userId);
             File destinationFile = new File(buildUserUploadedDirectory(email), file.getOriginalFilename());
             saveFile(file, destinationFile);
             setCheckingStatus(gpxFile);
@@ -69,8 +69,9 @@ public class GpxService {
         return new File(uploadDirectory, securityEncoder.hashWithSHA256(email));
     }
 
-    private GpxFile createDatabaseEntry(MultipartFile gpxFile) {
+    private GpxFile createGpxFile(MultipartFile gpxFile, int userId) {
         GpxFile file = new GpxFile();
+        file.setUsedId(userId);
         file.setFilename(gpxFile.getOriginalFilename());
         file.setStatus(FileStatus.UPLOADING);
         filesRepository.save(file);

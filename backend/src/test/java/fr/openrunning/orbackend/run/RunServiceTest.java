@@ -65,5 +65,4 @@ public class RunServiceTest {
             Assertions.fail();
         }
     }
-
 }

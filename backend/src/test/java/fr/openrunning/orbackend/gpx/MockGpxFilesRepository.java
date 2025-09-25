@@ -83,5 +83,4 @@ public class MockGpxFilesRepository implements GpxFilesRepository {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteAll'");
     }
-
 }

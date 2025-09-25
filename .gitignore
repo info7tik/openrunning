@@ -4,7 +4,7 @@ frontend/dist
 
 **/target/
 gpxprocessor/activities*
-backend/upload-dir/
+backend/gpxfiles
 
 dist
 db_data

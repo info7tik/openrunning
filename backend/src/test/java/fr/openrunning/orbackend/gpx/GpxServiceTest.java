@@ -27,7 +27,7 @@ public class GpxServiceTest {
             String fileContent = "testing content";
             String filename = "gpxfile.txt";
             MultipartFile file = creaMultipartFile(filename, fileContent);
-            service.store(file, email);
+            service.store(file, 3, email);
             Path uploadedFile = userDirectory.resolve(file.getOriginalFilename());
             Assertions.assertTrue(uploadedFile.toFile().exists());
             Assertions.assertEquals(fileContent.getBytes().length, uploadedFile.toFile().length());

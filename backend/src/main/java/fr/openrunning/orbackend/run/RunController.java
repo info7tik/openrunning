@@ -36,7 +36,7 @@ public class RunController {
             @PathVariable String frequency,
             @PathVariable long startTime) {
         try {
-            int userId = userService.getUserId(extractToken(headerWithToken));
+            int userId = userService.getUserId(headerWithToken);
             JsonResponse response = new JsonResponse(runService.getLastRuns(userId, FrequencyType.DAILY, startTime));
             return response.buildSuccessResponse();
         } catch (OpenRunningException e) {
@@ -52,7 +52,7 @@ public class RunController {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String headerWithToken,
             @PathVariable long timestamp) {
         try {
-            int userId = userService.getUserId(extractToken(headerWithToken));
+            int userId = userService.getUserId(headerWithToken);
             JsonResponse response = new JsonResponse(runService.getRunSamples(userId, timestamp));
             return response.buildSuccessResponse();
         } catch (OpenRunningException e) {
@@ -65,9 +65,9 @@ public class RunController {
 
     @GetMapping("/records")
     public ResponseEntity<Object> getPersonalRecords(
-        @RequestHeader(HttpHeaders.AUTHORIZATION) String headerWithToken) {
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String headerWithToken) {
         try {
-            int userId = userService.getUserId(extractToken(headerWithToken));
+            int userId = userService.getUserId(headerWithToken);
             JsonResponse response = new JsonResponse(runService.getPersonalRecords(userId));
             return response.buildSuccessResponse();
         } catch (OpenRunningException e) {
@@ -84,7 +84,7 @@ public class RunController {
             @PathVariable long timestamp) {
         int userId = -1;
         try {
-            userId = userService.getUserId(extractToken(headerWithToken));
+            userId = userService.getUserId(headerWithToken);
             JsonResponse response = new JsonResponse(runService.getTrackRecords(userId, timestamp));
             return response.buildSuccessResponse();
         } catch (OpenRunningException e) {
@@ -92,15 +92,6 @@ public class RunController {
             logger.error(errorMessage, e);
             JsonResponse response = new JsonResponse(new JsonMessage(errorMessage));
             return response.buildInternalErrorResponse();
-        }
-    }
-
-    private String extractToken(String authorizationHeader) throws OpenRunningException {
-        String[] information = authorizationHeader.split(" ");
-        if (information.length == 2) {
-            return information[1];
-        } else {
-            throw new OpenRunningException("error while extracting token");
         }
     }
 }
