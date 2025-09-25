@@ -27,7 +27,7 @@ public class Frequency extends DatabaseObject {
     @Getter
     @Setter
     @Column(name = "time_s")
-    private long totalTimeInSeconds;
+    private int totalTimeInSeconds;
 
     public Frequency aggregate(Frequency frequency) {
         Frequency aggregated = new Frequency();

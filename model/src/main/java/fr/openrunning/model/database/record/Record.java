@@ -20,7 +20,7 @@ public class Record extends DatabaseObject {
     @Setter
     @Getter
     @Column(name = "time_s")
-    private long timeInSeconds;
+    private int timeInSeconds;
     @Setter
     @Getter
     @Column(name = "first_point_index")
