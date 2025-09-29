@@ -24,7 +24,7 @@ public class FrequencyStatistic extends StatisticModule<Frequency> {
     @Getter
     private long yearTimestamp = 0L;
     @Getter
-    private long timeInSeconds = 0;
+    private int timeInSeconds = 0;
     @Getter
     private int distanceInMeters = 0;
 

@@ -24,7 +24,7 @@ public class RecordStatistic extends StatisticModule<Record> {
     private int startPointIndex = 0;
     private int endPointIndex = 0;
     private int distanceInMeters = 0;
-    private long timeInSeconds = 0;
+    private int timeInSeconds = 0;
     @Getter
     private int bestStartIndex = 0;
     @Getter
@@ -36,7 +36,7 @@ public class RecordStatistic extends StatisticModule<Record> {
     @Getter
     private int bestDistanceInMeters = 0;
     @Getter
-    private long bestTimeInSeconds = 0;
+    private int bestTimeInSeconds = 0;
 
     public RecordStatistic(int targetInMeters) {
         super(StatisticModuleName.RECORD);
@@ -104,7 +104,7 @@ public class RecordStatistic extends StatisticModule<Record> {
     public List<Record> toDatabaseObject(int userId) {
         List<Record> records = new ArrayList<>();
         if (bestDistanceInMeters >= targetInMeters) {
-            long bestTimeForTarget = bestTimeInSeconds * targetInMeters / bestDistanceInMeters;
+            int bestTimeForTarget = bestTimeInSeconds * targetInMeters / bestDistanceInMeters;
             Record recordDatabase = new Record();
             recordDatabase.setTimestamp(firstTimeInSeconds);
             recordDatabase.setUserId(userId);

@@ -21,7 +21,7 @@ public class GpxTrack {
     @Getter
     private int distanceInMeters = 0;
     @Getter
-    private long timeInSeconds = 0;
+    private int timeInSeconds = 0;
     @Getter
     private final List<GpxPoint> gpxPoints = new ArrayList<>();
     @Getter
