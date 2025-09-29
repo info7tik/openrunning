@@ -12,7 +12,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import fr.openrunning.gpxprocessor.database.DatabaseService;
-import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
 import fr.openrunning.gpxprocessor.gpxparser.GpxTrackBuilder;
 import fr.openrunning.gpxprocessor.statistics.StatisticModuleManager;
 import fr.openrunning.gpxprocessor.statistics.StatisticModuleName;
@@ -27,6 +26,7 @@ public class CommandLineInterface implements ApplicationRunner {
     private final StatisticModuleManager moduleManager;
     private final GpxTrackBuilder trackBuilder;
     private final DatabaseService databaseService;
+    private final int waitBeetweenLoopSeconds = 2;
 
     @Autowired
     public CommandLineInterface(CommandLineOptionManager optionManager, StatisticModuleManager moduleManager,
@@ -41,16 +41,20 @@ public class CommandLineInterface implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         try {
             logger.info("Starting the CLI...");
-            int userId = databaseService.getUserIdFromEmail(optionManager.getUserEmail(args));
-            if (userId == -1) {
-                throw new GpxProcessorException("failed to find the user id from the database");
-            }
             moduleManager.enableStatisticModule(StatisticModuleName.RECORD);
             moduleManager.enableStatisticModule(StatisticModuleName.FREQUENCY);
-            List<File> gpxFiles = optionManager.getGpxFiles(args);
-            List<GpxTrack> gpxTracks = parseGpxFiles(gpxFiles);
-            buildStatistics(gpxTracks);
-            saveTrackAndStatistics(userId, gpxTracks);
+            while (true) {
+                try {
+                    List<File> gpxFiles = optionManager.getGpxFiles(args);
+                    List<GpxTrack> gpxTracks = parseGpxFiles(gpxFiles);
+                    buildStatistics(gpxTracks);
+                    saveTrackAndStatistics(1, gpxTracks);
+                    logger.debug("Wait " + waitBeetweenLoopSeconds + " seconds before the next loop");
+                    Thread.sleep(waitBeetweenLoopSeconds * 1000);
+                } catch (Exception e) {
+                    logger.error("can not parse the GPX files", e);
+                }
+            }
         } catch (Exception e) {
             logger.error("error while parsing GPX files", e);
             System.out.println("ERROR: " + e);
