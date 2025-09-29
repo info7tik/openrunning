@@ -39,34 +39,11 @@ RUN mvn clean package $MVN_DOWNLOAD_ONLY
 COPY backend/src src
 RUN mvn clean package $MVN_COMPILE
 
-### Build the GPX file processor
-FROM maven:3.8.5-openjdk-17 AS processor-builder
-
-# Import variables to the stage
-ARG REPOSITORY_DIR
-ARG MVN_DOWNLOAD_ONLY
-ARG MVN_COMPILE
-
-WORKDIR /build
-
-# Import the model library
-COPY --from=modelbuilder $REPOSITORY_DIR $REPOSITORY_DIR
-
-# Copy the pom.xml to download all maven dependencies
-COPY gpxprocessor/pom.xml pom.xml
-RUN mvn clean package $MVN_DOWNLOAD_ONLY
-
-# Build the application to another Docker layers
-COPY gpxprocessor/src src
-RUN mvn clean package $MVN_COMPILE
-
 ### Build the final backend container
 FROM openjdk:17-slim-buster
 # Set the current directory
 WORKDIR /root
 # Copy the applications to the container
-COPY --from=processor-builder /build/target/gpxprocessor-*.jar .
 COPY --from=backend-builder /build/target/orbackend-*.jar .
 # Start the backend API
-CMD ["bash"]
 ENTRYPOINT [ "bash", "-c", "java -jar orbackend-*.jar" ]

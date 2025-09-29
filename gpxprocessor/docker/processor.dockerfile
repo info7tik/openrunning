@@ -45,5 +45,5 @@ FROM openjdk:17-slim-buster
 WORKDIR /root
 # Copy the applications to the container
 COPY --from=processor-builder /build/target/gpxprocessor-*.jar .
-# Start the backend API
+# Start the GPX processor
 ENTRYPOINT [ "bash", "-c", "java -jar gpxprocessor-*.jar" ]
