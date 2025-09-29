@@ -30,7 +30,7 @@ public class Track extends DatabaseObject {
     @Setter
     @Getter
     @Column(name = "time_s")
-    private long timeInSeconds;
+    private int timeInSeconds;
     @Setter
     @Getter
     private String name;

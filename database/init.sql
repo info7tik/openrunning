@@ -14,7 +14,7 @@ CREATE TABLE `tracks` (
   `distance_m` INT NOT NULL,
   `filename` VARCHAR(255) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
-  `time_s` BIGINT NOT NULL,
+  `time_s` INT NOT NULL,
 
   PRIMARY KEY (`timestamp`,`user_id`)
 );
