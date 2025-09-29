@@ -60,17 +60,18 @@ https://github.com/info7tik/openrunning.git
 cd openrunning
 docker compose up -d
 ```
-This command should start three containers:
+This command should start four containers:
 * the `database` container contains the mariaDB database. It stores all the information about the GPX files.
-* the `backend` container contains the API of the application. It stores the GPX files and process them to fill the
-  database.
+* the `backend` container contains the API of the application. It stores the GPX files and expose the data of the
+  database to the frontend.
+* the `processor` container contains the GPX processor. It processes the GPX files and fill the database.
 * the `frontend` container contains the web application that it binds to the port 4200.
 Open the URL [http://localhost:4200](http://localhost:4200) to connect to the application.
 
 ### Check your Run
 #### Database Check
 * Install the MySQL client `sudo apt install mariadb-client` or `sudo apt install mysql-client`.
-* Connect to the database with `mysql -udbuser -pdbroot -h127.0.0.1 -P3333`
+* Connect to the database with `mysql -uroot -pdbroot -h127.0.0.1 -P3333`
 * Check the database `openrunning` exists:
 ```
 mysql> use openrunning;
@@ -111,20 +112,9 @@ To see the logs of the containers, use the following commands **from the openrun
 ```
 docker compose logs database
 docker compose logs --follow backend
+docker compose logs --follow processor
 docker compose logs --follow frontend
 ```
-
-## Application Architecture
-The following diagram shows the process of calculating statistics from the GPX files:
-* The `Frontend` box is the frontend container.
-* The `Backend (orbackend.jar)` box represents the backend API that belongs to the backend container. This API is started by executing `orbackend.jar`.
-* The `Backend (gpxprocessor.jar)` box represents the application that reads the downloaded GPX files. This application belongs to the backend container.
-   It is started by executing `gpxprocessor.jar`.
-* The `Database` box represents the database container.
-
-![architecture of the application](./images/architecture.png)
-
-Thanks to [sequencediagram.org](https://sequencediagram.org/) to provide an easy and efficient drawing tool!
 
 ## Docker Containers
 ### Docker Container Connection
@@ -191,15 +181,6 @@ connect the `backend` module and the `gpxprocessor` module to the database runni
 is binded to the local port 3333.
 
 ### Backend
-* Configure the database connection by editing the `src/main/resources/application.properties` of both the
-`backend` and `gpxprocessor` projects:
-```
-# backend/src/main/resources/application.properties
-spring.datasource.url=jdbc:mariadb://127.0.0.1:3333/openrunning?allowPublicKeyRetrieval=true&useSSL=false
-# gpxprocessor/src/main/resources/application.properties
-spring.datasource.url=jdbc:mariadb://127.0.0.1:3333/openrunning?allowPublicKeyRetrieval=true&useSSL=false
-```
-
 * Then, open the `backend` project in your IDE (here, VSCode):
   * `File > Open Folder...` and select the `backend` directory
   * `File > Add Folder to Workspace...` and select the `model` directory
@@ -230,6 +211,8 @@ spring.datasource.url=jdbc:mariadb://127.0.0.1:3333/openrunning?allowPublicKeyRe
   mvn clean package -DskipTests
   java -jar target/gpxprocessor-*.jar
   ```
+
+*NOTE: It could be more efficient to open the `backend` project and the `gpxprocessor` project in two different windows.*
 
 ### Frontend
 * Run the `frontend` module
