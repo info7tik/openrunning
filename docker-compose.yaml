@@ -24,6 +24,12 @@ services:
     build:
       context: .
       dockerfile: backend/docker/backend.dockerfile
+    environment:
+      DB_HOST: ${E_DB_HOST}
+      DB_PORT: ${E_DB_PORT}
+      DB_USER: ${E_DB_USER}
+      DB_ROOT_PASSWORD: ${E_DB_ROOT_PASSWORD}
+      DB_DATABASE: ${E_DB_DATABASE}
     depends_on:
       - database
     ports:
