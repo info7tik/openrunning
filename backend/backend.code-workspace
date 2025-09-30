@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../model"
+		}
+	],
+    "settings": {
+        "java.compile.nullAnalysis.mode": "disabled"
+    }
+}

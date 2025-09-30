@@ -19,7 +19,6 @@ db_data
 *.sublime-workspace
 
 # Visual Studio Code
-**/*.code-workspace
 .vscode
 .history/*
 
