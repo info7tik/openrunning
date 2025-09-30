@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.openrunning.gpxprocessor.FileSystem;
+import fr.openrunning.model.FileSystem;
 import fr.openrunning.model.database.gpxfiles.GpxFilesRepository;
 import fr.openrunning.model.type.FileStatus;
 

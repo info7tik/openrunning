@@ -1,4 +1,4 @@
-package fr.openrunning.gpxprocessor;
+package fr.openrunning.model;
 
 import java.io.File;
 
