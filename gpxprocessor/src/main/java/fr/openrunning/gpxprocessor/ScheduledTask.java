@@ -5,8 +5,7 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import fr.openrunning.gpxprocessor.database.DatabaseService;
@@ -21,16 +20,15 @@ import fr.openrunning.gpxprocessor.track.GpxTrack;
 import fr.openrunning.model.exception.OpenRunningException;
 
 @Component
-public class CommandLineInterface implements ApplicationRunner {
-    private final Logger logger = LoggerFactory.getLogger(CommandLineInterface.class);
+public class ScheduledTask {
+    private final Logger logger = LoggerFactory.getLogger(ScheduledTask.class);
     private final StatisticModuleManager moduleManager;
     private final GpxTrackBuilder trackBuilder;
     private final DatabaseService databaseService;
     private final FileFinder fileFinder;
-    private final int waitBeetweenLoopSeconds = 2;
 
     @Autowired
-    public CommandLineInterface(
+    public ScheduledTask(
             FileFinder fileFinder, StatisticModuleManager moduleManager,
             GpxTrackBuilder trackBuilder, DatabaseService service) {
         this.moduleManager = moduleManager;
@@ -39,28 +37,19 @@ public class CommandLineInterface implements ApplicationRunner {
         this.fileFinder = fileFinder;
     }
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
+    @Scheduled(fixedDelay = 2000)
+    public void run() throws Exception {
         try {
-            logger.info("Starting the CLI...");
             moduleManager.enableStatisticModule(StatisticModuleName.RECORD);
             moduleManager.enableStatisticModule(StatisticModuleName.FREQUENCY);
-            while (true) {
-                try {
-                    for (ReadyFile file : this.fileFinder.getReadyToParse()) {
-                        GpxTrack track = parse(file.getFile());
-                        buildStatistics(track);
-                        saveTrackAndStatistics(file.getUserId(), track);
-                    }
-                    logger.debug("Wait " + waitBeetweenLoopSeconds + " seconds before the next loop");
-                    Thread.sleep(waitBeetweenLoopSeconds * 1000);
-                } catch (Exception e) {
-                    logger.error("can not parse the GPX files", e);
-                }
+            for (ReadyFile file : this.fileFinder.getReadyToParse()) {
+                logger.info("processing the file " + file.getFile().getAbsolutePath());
+                GpxTrack track = parse(file.getFile());
+                buildStatistics(track);
+                saveTrackAndStatistics(file.getUserId(), track);
             }
         } catch (Exception e) {
             logger.error("error while parsing GPX files", e);
-            System.out.println("ERROR: " + e);
         }
     }
 
