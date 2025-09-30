@@ -3,7 +3,7 @@ package fr.openrunning.orbackend.common.json;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import fr.openrunning.orbackend.common.exception.OpenRunningException;
+import fr.openrunning.model.exception.OpenRunningException;
 
 public class JsonResponse {
     private final Object body;

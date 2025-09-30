@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import fr.openrunning.orbackend.common.exception.OpenRunningException;
+import fr.openrunning.model.exception.OpenRunningException;
 import fr.openrunning.orbackend.common.json.JsonMessage;
 import fr.openrunning.orbackend.common.json.JsonResponse;
 import fr.openrunning.orbackend.user.json.JsonApiToken;

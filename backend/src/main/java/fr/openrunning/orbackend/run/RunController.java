@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import fr.openrunning.model.exception.OpenRunningException;
 import fr.openrunning.model.type.FrequencyType;
-import fr.openrunning.orbackend.common.exception.OpenRunningException;
 import fr.openrunning.orbackend.common.json.JsonMessage;
 import fr.openrunning.orbackend.common.json.JsonResponse;
 import fr.openrunning.orbackend.user.UserService;

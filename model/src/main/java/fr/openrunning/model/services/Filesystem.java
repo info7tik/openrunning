@@ -1,4 +1,4 @@
-package fr.openrunning.model;
+package fr.openrunning.model.services;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;

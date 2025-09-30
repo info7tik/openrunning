@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import fr.openrunning.model.database.user.User;
-import fr.openrunning.orbackend.common.exception.OpenRunningException;
+import fr.openrunning.model.exception.OpenRunningException;
 
 @Component
 public class SecurityEncoder {

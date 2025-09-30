@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import fr.openrunning.orbackend.common.exception.OpenRunningException;
+import fr.openrunning.model.exception.OpenRunningException;
 import fr.openrunning.orbackend.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

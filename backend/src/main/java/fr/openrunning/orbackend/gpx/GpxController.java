@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import fr.openrunning.orbackend.common.exception.OpenRunningException;
+import fr.openrunning.model.exception.OpenRunningException;
 import fr.openrunning.orbackend.common.json.JsonMessage;
 import fr.openrunning.orbackend.common.json.JsonResponse;
 import fr.openrunning.orbackend.gpx.json.JsonUpload;

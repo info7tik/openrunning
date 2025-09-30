@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import fr.openrunning.model.database.user.User;
 import fr.openrunning.model.database.user.UserRepository;
-import fr.openrunning.orbackend.common.exception.OpenRunningException;
+import fr.openrunning.model.exception.OpenRunningException;
 import fr.openrunning.orbackend.gpx.GpxService;
 import fr.openrunning.orbackend.user.json.JsonLoginInformation;
 

@@ -12,11 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import fr.openrunning.model.Filesystem;
 import fr.openrunning.model.database.gpxfiles.GpxFile;
 import fr.openrunning.model.database.gpxfiles.GpxFilesRepository;
+import fr.openrunning.model.exception.OpenRunningException;
+import fr.openrunning.model.services.Filesystem;
 import fr.openrunning.model.type.FileStatus;
-import fr.openrunning.orbackend.common.exception.OpenRunningException;
 
 @Service
 public class GpxService {

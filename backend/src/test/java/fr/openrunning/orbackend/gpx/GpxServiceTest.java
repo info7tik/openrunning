@@ -8,8 +8,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import fr.openrunning.model.Filesystem;
 import fr.openrunning.model.database.gpxfiles.GpxFile;
+import fr.openrunning.model.services.Filesystem;
 import fr.openrunning.model.type.FileStatus;
 
 public class GpxServiceTest {

@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import fr.openrunning.model.database.user.User;
 import fr.openrunning.model.database.user.UserRepository;
-import fr.openrunning.orbackend.common.exception.OpenRunningException;
+import fr.openrunning.model.exception.OpenRunningException;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
