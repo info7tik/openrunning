@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import fr.openrunning.gpxprocessor.database.DatabaseService;
+import fr.openrunning.gpxprocessor.database.StatusService;
 import fr.openrunning.gpxprocessor.database.UserService;
 import fr.openrunning.gpxprocessor.finder.FileFinder;
 import fr.openrunning.gpxprocessor.finder.ReadyFile;
@@ -19,6 +20,7 @@ import fr.openrunning.gpxprocessor.statistics.StatisticModuleName;
 import fr.openrunning.gpxprocessor.statistics.modules.FrequencyStatistic;
 import fr.openrunning.gpxprocessor.statistics.modules.RecordStatistic;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
+import fr.openrunning.model.database.gpxfiles.GpxFile;
 import fr.openrunning.model.exception.OpenRunningException;
 
 @Component
@@ -29,16 +31,19 @@ public class ScheduledTask {
     private final DatabaseService databaseService;
     private final FileFinder fileFinder;
     private final UserService userService;
+    private final StatusService statusService;
 
     @Autowired
     public ScheduledTask(
             FileFinder fileFinder, StatisticModuleManager moduleManager,
-            UserService userService, GpxTrackBuilder trackBuilder, DatabaseService service) {
+            GpxTrackBuilder trackBuilder, UserService userService, StatusService statusService,
+            DatabaseService service) {
         this.moduleManager = moduleManager;
         this.trackBuilder = trackBuilder;
         this.databaseService = service;
         this.fileFinder = fileFinder;
         this.userService = userService;
+        this.statusService = statusService;
     }
 
     @Scheduled(fixedDelay = 2, timeUnit = TimeUnit.SECONDS)
@@ -48,9 +53,12 @@ public class ScheduledTask {
             moduleManager.enableStatisticModule(StatisticModuleName.FREQUENCY);
             for (ReadyFile file : this.fileFinder.getReadyToParse(this.userService.buildFileEntries())) {
                 logger.info("processing the file " + file.getFile().getAbsolutePath());
+                GpxFile gpxFile = this.statusService.get(file.getFile().getName());
+                this.statusService.markAsProcessing(gpxFile);
                 GpxTrack track = parse(file.getFile());
                 buildStatistics(track);
                 saveTrackAndStatistics(file.getUserId(), track);
+                this.statusService.markAsCompleted(gpxFile);
             }
         } catch (Exception e) {
             logger.error("error while parsing GPX files", e);
