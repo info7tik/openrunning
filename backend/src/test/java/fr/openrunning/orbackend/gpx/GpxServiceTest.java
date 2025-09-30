@@ -16,7 +16,7 @@ public class GpxServiceTest {
     @Test
     public void store() {
         try {
-            Filesystem filesystem = new Filesystem();
+            Filesystem filesystem = new Filesystem("not_used");
             String email = "testing@openrunning";
             File userDirectory = filesystem.userUploadDirectory(email);
             Assertions.assertTrue(userDirectory.mkdirs());
