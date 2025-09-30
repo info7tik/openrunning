@@ -1,6 +1,5 @@
 package fr.openrunning.gpxprocessor.track;
 
-import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
 import fr.openrunning.model.database.samples.Sample;
 import fr.openrunning.model.type.DistanceUnit;
 import lombok.Getter;
@@ -36,7 +35,7 @@ public class GpxSample {
                 + timeInSeconds + "s | " + numberOfGPXPoints + " points";
     }
 
-    public Sample toDatabaseObject(int userId, int sampleIndex) throws GpxProcessorException {
+    public Sample toDatabaseObject(int userId, int sampleIndex) {
         Sample sample = new Sample();
         sample.setUserId(userId);
         sample.setTimestamp(runTimestamp);

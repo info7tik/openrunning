@@ -6,17 +6,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.openrunning.model.FileSystem;
 import fr.openrunning.model.database.gpxfiles.GpxFilesRepository;
+import fr.openrunning.model.services.Filesystem;
 import fr.openrunning.model.type.FileStatus;
 
 @Service
 public class FileFinder {
-    private final FileSystem filesystem;
+    private final Filesystem filesystem;
     @Autowired
     private final GpxFilesRepository filesRepository;
 
-    public FileFinder(FileSystem filesystem, GpxFilesRepository filesRepository) {
+    public FileFinder(Filesystem filesystem, GpxFilesRepository filesRepository) {
         this.filesystem = filesystem;
         this.filesRepository = filesRepository;
     }

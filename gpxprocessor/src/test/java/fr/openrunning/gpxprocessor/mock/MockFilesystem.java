@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.openrunning.model.FileSystem;
+import fr.openrunning.model.services.Filesystem;
 
-public class MockFileSystem extends FileSystem {
+public class MockFilesystem extends Filesystem {
     private List<File> files = new ArrayList<>();
 
     public void addFile(File file) {

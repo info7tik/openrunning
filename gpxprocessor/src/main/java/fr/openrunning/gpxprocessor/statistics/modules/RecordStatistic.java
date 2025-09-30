@@ -7,13 +7,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
 import fr.openrunning.gpxprocessor.statistics.StatisticModule;
 import fr.openrunning.gpxprocessor.statistics.StatisticModuleName;
 import fr.openrunning.gpxprocessor.track.GpxPoint;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 import fr.openrunning.gpxprocessor.track.Utils;
 import fr.openrunning.model.database.record.Record;
+import fr.openrunning.model.exception.OpenRunningException;
 import lombok.Getter;
 
 public class RecordStatistic extends StatisticModule<Record> {
@@ -44,11 +44,11 @@ public class RecordStatistic extends StatisticModule<Record> {
     }
 
     @Override
-    public void compute(GpxTrack track) throws GpxProcessorException {
+    public void compute(GpxTrack track) throws OpenRunningException {
         if (!gpxPoints.isEmpty()) {
             logger.error("error while computing data with " + getModuleName()
                     + ": the statistic can be computed only one time");
-            throw new GpxProcessorException("statistics can only be computed one time");
+            throw new OpenRunningException("statistics can only be computed one time");
         }
         firstTimeInSeconds = track.getFirstTime();
         gpxPoints.addAll(track.getGpxPoints());

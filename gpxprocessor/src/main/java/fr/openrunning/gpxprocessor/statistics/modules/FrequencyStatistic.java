@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
 import fr.openrunning.gpxprocessor.statistics.StatisticModule;
 import fr.openrunning.gpxprocessor.statistics.StatisticModuleName;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 import fr.openrunning.model.database.frequency.Frequency;
+import fr.openrunning.model.exception.OpenRunningException;
 import fr.openrunning.model.type.FrequencyType;
 import lombok.Getter;
 
@@ -34,7 +34,7 @@ public class FrequencyStatistic extends StatisticModule<Frequency> {
     }
 
     @Override
-    public void compute(GpxTrack track) throws GpxProcessorException {
+    public void compute(GpxTrack track) throws OpenRunningException {
         setDistanceInMeters(track);
         setTimeInSeconds(track);
         Calendar trackDate = Calendar.getInstance();

@@ -9,11 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
 import fr.openrunning.gpxprocessor.statistics.modules.FrequencyStatistic;
 import fr.openrunning.gpxprocessor.statistics.modules.RecordStatistic;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
 import fr.openrunning.model.database.DatabaseObject;
+import fr.openrunning.model.exception.OpenRunningException;
 import lombok.Getter;
 
 @Component
@@ -46,7 +46,7 @@ public class StatisticModuleManager {
                         recordDistancesInMeters.forEach((target) -> statisticModules.add(new RecordStatistic(target)));
                         break;
                     default:
-                        throw new GpxProcessorException("the module " + module + "is not loaded or does not exist");
+                        throw new OpenRunningException("the module " + module + "is not loaded or does not exist");
                 }
                 statisticModules.forEach((statsModule) -> {
                     try {

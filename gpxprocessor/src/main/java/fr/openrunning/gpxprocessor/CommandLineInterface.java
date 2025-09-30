@@ -10,7 +10,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import fr.openrunning.gpxprocessor.database.DatabaseService;
-import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
 import fr.openrunning.gpxprocessor.finder.FileFinder;
 import fr.openrunning.gpxprocessor.finder.ReadyFile;
 import fr.openrunning.gpxprocessor.gpxparser.GpxTrackBuilder;
@@ -19,6 +18,7 @@ import fr.openrunning.gpxprocessor.statistics.StatisticModuleName;
 import fr.openrunning.gpxprocessor.statistics.modules.FrequencyStatistic;
 import fr.openrunning.gpxprocessor.statistics.modules.RecordStatistic;
 import fr.openrunning.gpxprocessor.track.GpxTrack;
+import fr.openrunning.model.exception.OpenRunningException;
 
 @Component
 public class CommandLineInterface implements ApplicationRunner {
@@ -64,7 +64,7 @@ public class CommandLineInterface implements ApplicationRunner {
         }
     }
 
-    private GpxTrack parse(File gpxFile) throws GpxProcessorException {
+    private GpxTrack parse(File gpxFile) throws OpenRunningException {
         logger.info("Parsing " + gpxFile.getAbsolutePath());
         try {
             if (databaseService.isFileAlreadyParsed(gpxFile.getName())) {
@@ -76,7 +76,7 @@ public class CommandLineInterface implements ApplicationRunner {
                 logger.info(track.buildTrackInformation());
                 return track;
             }
-        } catch (GpxProcessorException gpe) {
+        } catch (OpenRunningException gpe) {
             throw gpe;
         } catch (Exception e) {
             throw logThenRaise("error while parsing '" + gpxFile.getAbsolutePath() + "'", e);
@@ -109,13 +109,13 @@ public class CommandLineInterface implements ApplicationRunner {
         });
     }
 
-    private GpxProcessorException logThenRaise(String message) {
+    private OpenRunningException logThenRaise(String message) {
         logger.error(message);
-        return new GpxProcessorException(message);
+        return new OpenRunningException(message);
     }
 
-    private GpxProcessorException logThenRaise(String message, Exception e) {
+    private OpenRunningException logThenRaise(String message, Exception e) {
         logger.error(message, e);
-        return new GpxProcessorException(message, e);
+        return new OpenRunningException(message, e);
     }
 }

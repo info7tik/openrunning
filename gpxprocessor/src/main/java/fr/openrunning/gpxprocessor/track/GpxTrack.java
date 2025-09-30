@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import fr.openrunning.gpxprocessor.exception.GpxProcessorException;
 import fr.openrunning.model.database.track.Track;
 import lombok.Getter;
 import lombok.Setter;
@@ -104,7 +103,7 @@ public class GpxTrack {
         return builder.toString();
     }
 
-    public Track toDatabaseObject(int userId) throws GpxProcessorException {
+    public Track toDatabaseObject(int userId) {
         Track newTrack = new Track();
         newTrack.setUserId(userId);
         newTrack.setTimestamp(getFirstTime());

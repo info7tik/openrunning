@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import fr.openrunning.gpxprocessor.mock.MockFileSystem;
+import fr.openrunning.gpxprocessor.mock.MockFilesystem;
 import fr.openrunning.model.database.gpxfiles.GpxFile;
 import fr.openrunning.model.database.gpxfiles.GpxFilesRepository;
 import fr.openrunning.model.type.FileStatus;
@@ -32,10 +32,9 @@ public class FileFinderTest {
         checkingFileNotExist.setStatus(FileStatus.CHECKING);
         checkingFileNotExist.setUsedId(firstUserId);
         when(filesRepository.findByStatus(any())).thenReturn(List.of(checkingFile, checkingFileNotExist));
-        MockFileSystem fileSystem = new MockFileSystem();
-        fileSystem.addFile(new File(checkingFile.getFilename()));
-
-        FileFinder finder = new FileFinder(fileSystem, filesRepository);
+        MockFilesystem filesystem = new MockFilesystem();
+        filesystem.addFile(new File(checkingFile.getFilename()));
+        FileFinder finder = new FileFinder(filesystem, filesRepository);
         List<ReadyFile> files = finder.getReadyToParse();
         assertEquals(1, files.size());
     }
