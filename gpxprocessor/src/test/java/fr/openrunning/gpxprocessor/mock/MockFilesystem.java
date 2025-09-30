@@ -7,14 +7,18 @@ import java.util.List;
 import fr.openrunning.model.services.Filesystem;
 
 public class MockFilesystem extends Filesystem {
-    private List<File> files = new ArrayList<>();
+    public MockFilesystem() {
+        super("not_defined");
+    }
 
-    public void addFile(File file) {
-        files.add(file);
+    private List<String> filenames = new ArrayList<>();
+
+    public void addFile(String filename) {
+        filenames.add(filename);
     }
 
     @Override
     public boolean exists(File file) {
-        return files.contains(file);
+        return filenames.contains(file.getName());
     }
 }

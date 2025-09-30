@@ -24,40 +24,24 @@ import fr.openrunning.model.database.samples.Sample;
 import fr.openrunning.model.database.samples.SamplesRepository;
 import fr.openrunning.model.database.track.Track;
 import fr.openrunning.model.database.track.TracksRepository;
-import fr.openrunning.model.database.user.User;
-import fr.openrunning.model.database.user.UserRepository;
 import fr.openrunning.model.type.FrequencyType;
 
 @Service
 public class DatabaseService {
     private final Logger logger = LoggerFactory.getLogger(DatabaseService.class);
-    private final UserRepository userRepository;
     private final TracksRepository tracksRepository;
     private final SamplesRepository samplesRepository;
     private final RecordsRepository recordsRepository;
     private final FrequencyRepository frequencyRepository;
 
     @Autowired
-    public DatabaseService(UserRepository userRepository, TracksRepository tracksRepository,
+    public DatabaseService(TracksRepository tracksRepository,
             SamplesRepository samplesRepository, RecordsRepository recordsRepository,
             FrequencyRepository frequencyRepository) {
-        this.userRepository = userRepository;
         this.tracksRepository = tracksRepository;
         this.samplesRepository = samplesRepository;
         this.recordsRepository = recordsRepository;
         this.frequencyRepository = frequencyRepository;
-    }
-
-    public int getUserIdFromEmail(String email) {
-        List<User> users = userRepository.findByEmail(email);
-        if (users.isEmpty()) {
-            return -1;
-        } else {
-            if (users.size() > 1) {
-                logger.error("more than one user found from " + email);
-            }
-            return users.get(0).getId();
-        }
     }
 
     public boolean isFileAlreadyParsed(String filename) {
