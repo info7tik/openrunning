@@ -2,11 +2,16 @@ frontend/.angular/
 frontend/node_modules
 frontend/dist
 
+# Maven compilation directory
 **/target/
+# GPX files
 gpxprocessor/activities*
+# Directory containing GPX files
+gpxprocessor/gpxfiles
+# Directory containing GPX files
 backend/gpxfiles
 
-dist
+# Database directory
 db_data
 
 # IDEs and editors
