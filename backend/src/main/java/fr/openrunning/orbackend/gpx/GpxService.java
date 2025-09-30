@@ -12,30 +12,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import fr.openrunning.model.Filesystem;
 import fr.openrunning.model.database.gpxfiles.GpxFile;
 import fr.openrunning.model.database.gpxfiles.GpxFilesRepository;
 import fr.openrunning.model.type.FileStatus;
 import fr.openrunning.orbackend.common.exception.OpenRunningException;
-import fr.openrunning.orbackend.user.SecurityEncoder;
 
 @Service
 public class GpxService {
     private final Logger logger = LoggerFactory.getLogger(GpxService.class);
-    private final SecurityEncoder securityEncoder;
-    private final File uploadDirectory;
     private final GpxFilesRepository filesRepository;
+    private final Filesystem filesystem;
 
     @Autowired
-    public GpxService(SecurityEncoder securityEncoder, GpxFilesRepository repository) {
-        String allDirectoriesLocation = "gpxfiles";
-        this.uploadDirectory = new File(allDirectoriesLocation);
-        this.securityEncoder = securityEncoder;
+    public GpxService(Filesystem filesystem, GpxFilesRepository repository) {
+        this.filesystem = filesystem;
         this.filesRepository = repository;
     }
 
     public void createUserDirectory(String email) throws OpenRunningException {
         try {
-            File userDirectory = buildUserUploadedDirectory(email);
+            File userDirectory = filesystem.userUploadDirectory(email);
             if (userDirectory.exists()) {
                 String errorMessage = "error while creating the directory '" + userDirectory.getName()
                         + "': directory already exists";
@@ -55,7 +52,7 @@ public class GpxService {
                 throw new OpenRunningException("can not store empty files");
             }
             GpxFile gpxFile = createGpxFile(file, userId);
-            File destinationFile = new File(buildUserUploadedDirectory(email), file.getOriginalFilename());
+            File destinationFile = new File(filesystem.userUploadDirectory(email), file.getOriginalFilename());
             saveFile(file, destinationFile);
             setCheckingStatus(gpxFile);
         } catch (OpenRunningException ore) {
@@ -63,10 +60,6 @@ public class GpxService {
         } catch (Exception e) {
             throw new OpenRunningException("can not store the file", e);
         }
-    }
-
-    private File buildUserUploadedDirectory(String email) throws OpenRunningException {
-        return new File(uploadDirectory, securityEncoder.hashWithSHA256(email));
     }
 
     private GpxFile createGpxFile(MultipartFile gpxFile, int userId) {

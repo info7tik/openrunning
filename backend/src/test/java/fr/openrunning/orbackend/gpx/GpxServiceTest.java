@@ -1,7 +1,6 @@
 package fr.openrunning.orbackend.gpx;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,28 +8,27 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import fr.openrunning.model.Filesystem;
 import fr.openrunning.model.database.gpxfiles.GpxFile;
 import fr.openrunning.model.type.FileStatus;
-import fr.openrunning.orbackend.user.SecurityEncoder;
 
 public class GpxServiceTest {
     @Test
     public void store() {
         try {
-            SecurityEncoder encoder = new SecurityEncoder("signingkey", "passwordsalt");
+            Filesystem filesystem = new Filesystem();
             String email = "testing@openrunning";
-            String userDirectoryName = encoder.hashWithSHA256(email);
-            Path userDirectory = Paths.get("gpxfiles/" + userDirectoryName);
-            Assertions.assertTrue(userDirectory.toFile().mkdirs());
+            File userDirectory = filesystem.userUploadDirectory(email);
+            Assertions.assertTrue(userDirectory.mkdirs());
             MockGpxFilesRepository repository = new MockGpxFilesRepository();
-            GpxService service = new GpxService(encoder, repository);
+            GpxService service = new GpxService(filesystem, repository);
             String fileContent = "testing content";
             String filename = "gpxfile.txt";
             MultipartFile file = creaMultipartFile(filename, fileContent);
             service.store(file, 3, email);
-            Path uploadedFile = userDirectory.resolve(file.getOriginalFilename());
-            Assertions.assertTrue(uploadedFile.toFile().exists());
-            Assertions.assertEquals(fileContent.getBytes().length, uploadedFile.toFile().length());
+            File uploadedFile = new File(userDirectory, file.getOriginalFilename());
+            Assertions.assertTrue(uploadedFile.exists());
+            Assertions.assertEquals(fileContent.getBytes().length, uploadedFile.length());
             Assertions.assertTrue(FileSystemUtils.deleteRecursively(userDirectory));
             Assertions.assertEquals(1, repository.getFiles().size());
             GpxFile storedFile = repository.getFiles().iterator().next();

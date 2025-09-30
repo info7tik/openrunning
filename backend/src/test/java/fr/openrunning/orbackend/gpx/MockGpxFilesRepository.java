@@ -1,11 +1,13 @@
 package fr.openrunning.orbackend.gpx;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import fr.openrunning.model.database.gpxfiles.GpxFile;
 import fr.openrunning.model.database.gpxfiles.GpxFilesRepository;
+import fr.openrunning.model.type.FileStatus;
 import lombok.Getter;
 
 public class MockGpxFilesRepository implements GpxFilesRepository {
@@ -40,6 +42,12 @@ public class MockGpxFilesRepository implements GpxFilesRepository {
     public Iterable<GpxFile> findAll() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+    }
+
+    @Override
+    public List<GpxFile> findByStatus(FileStatus status) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
