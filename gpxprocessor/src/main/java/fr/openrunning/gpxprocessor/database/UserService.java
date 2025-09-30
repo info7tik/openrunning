@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import fr.openrunning.gpxprocessor.finder.FileEntry;
 import fr.openrunning.model.database.gpxfiles.GpxFile;
@@ -15,6 +16,7 @@ import fr.openrunning.model.database.user.User;
 import fr.openrunning.model.database.user.UserRepository;
 import fr.openrunning.model.type.FileStatus;
 
+@Service
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final GpxFilesRepository filesRepository;
