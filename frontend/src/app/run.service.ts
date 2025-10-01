@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { ApiRequestService } from './api-request.service';
 import { FilterOperator } from './type/FilterOperator';
+import { FirstTimestamp } from './type/FirstTimestamp';
 import { Frequency } from './type/Frequency';
 import { IRunStats } from './type/IRunStats';
 import { IRunWithTimestamp } from './type/IRunWithTimestamp';
@@ -67,5 +68,9 @@ export class RunService {
 
     public getTrackRecords(runId: number): Observable<RecordData[]> {
         return this.apiRequest.get<RecordData[]>("run/records/" + runId);
+    }
+
+    public getFirstTimestamp(): Observable<FirstTimestamp> {
+      return this.apiRequest.get<FirstTimestamp>("run/first");
     }
 }

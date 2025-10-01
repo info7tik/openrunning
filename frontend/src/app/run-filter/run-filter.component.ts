@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RunService } from '../run.service';
 import { FilterOperator } from '../type/FilterOperator';
 import { filterProperty as FilterProperty } from '../type/FilterProperty';
@@ -9,7 +9,7 @@ import { Frequency } from '../type/Frequency';
     templateUrl: './run-filter.component.html',
     styleUrls: ['./run-filter.component.css']
 })
-export class RunFilterComponent {
+export class RunFilterComponent implements OnInit{
     private propertyTagId = "property-tag";
 
     public beginningDate: string = new Date().toISOString().split('T')[0];
@@ -34,6 +34,12 @@ export class RunFilterComponent {
     public paceSeconds = 30;
 
     constructor(private runService: RunService) { }
+
+    ngOnInit(): void {
+      this.runService.getFirstTimestamp()
+        .subscribe(timestamps => timestamps.data
+          .forEach(t => this.beginningDate = new Date(t * 1000).toISOString().split('T')[0]))    
+    }
 
     updatePropertyTag(): void {
         if (this.operator === FilterOperator.NO_OPERATOR) {
