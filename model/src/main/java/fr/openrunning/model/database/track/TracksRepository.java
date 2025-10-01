@@ -1,6 +1,7 @@
 package fr.openrunning.model.database.track;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +16,6 @@ public interface TracksRepository extends CrudRepository<Track, TimestampUserPri
     List<Track> findLastRuns(int userId, long startTimestamp, Pageable pageable);
 
     List<Track> findByFilename(String filename);
+
+    Optional<Track> findFirstByOrderByTimestampDesc();
 }

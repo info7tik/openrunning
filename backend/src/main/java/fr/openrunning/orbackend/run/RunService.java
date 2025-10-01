@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import fr.openrunning.model.database.record.Record;
 import fr.openrunning.model.database.record.RecordsRepository;
 import fr.openrunning.model.database.samples.SamplesRepository;
+import fr.openrunning.model.database.track.Track;
 import fr.openrunning.model.database.track.TracksRepository;
 import fr.openrunning.model.exception.OpenRunningException;
 import fr.openrunning.model.type.DistanceUnit;
@@ -20,6 +21,7 @@ import fr.openrunning.model.type.FrequencyType;
 import fr.openrunning.orbackend.run.json.JsonRecord;
 import fr.openrunning.orbackend.run.json.JsonRun;
 import fr.openrunning.orbackend.run.json.JsonSamples;
+import fr.openrunning.orbackend.run.json.JsonTimestamp;
 
 @Service
 public class RunService {
@@ -89,6 +91,15 @@ public class RunService {
         List<Record> records = recordsRepository.getTrackRecords(userId, timestamp);
         records.forEach((record) -> json.add(buildJsonRecord(record)));
         return json;
+    }
+
+    public JsonTimestamp getFirstTimestamp(int userId) {
+        Optional<Track> first = this.tracksRepository.findFirstByOrderByTimestampDesc();
+        if (first.isPresent()) {
+            return new JsonTimestamp(first.get().getTimestamp());
+        } else {
+            return new JsonTimestamp();
+        }
     }
 
     private JsonRecord buildJsonRecord(Record record) {

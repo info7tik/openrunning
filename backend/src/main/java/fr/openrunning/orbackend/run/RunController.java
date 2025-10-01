@@ -63,6 +63,21 @@ public class RunController {
         }
     }
 
+    @GetMapping("/first")
+    public ResponseEntity<Object> getFirstTimestamp(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String headerWithToken) {
+        try {
+            int userId = userService.getUserId(headerWithToken);
+            JsonResponse response = new JsonResponse(runService.getFirstTimestamp(userId));
+            return response.buildSuccessResponse();
+        } catch (OpenRunningException e) {
+            String errorMessage = "error while retrieving first timestamp";
+            logger.error(errorMessage, e);
+            JsonResponse response = new JsonResponse(new JsonMessage(errorMessage));
+            return response.buildInternalErrorResponse();
+        }
+    }
+
     @GetMapping("/records")
     public ResponseEntity<Object> getPersonalRecords(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String headerWithToken) {
