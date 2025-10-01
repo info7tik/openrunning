@@ -10,6 +10,8 @@ gpxprocessor/activities*
 gpxprocessor/gpxfiles
 # Directory containing GPX files
 backend/gpxfiles
+# Token generated while testing
+openrunning-token.txt
 
 # Database directory
 db_data
