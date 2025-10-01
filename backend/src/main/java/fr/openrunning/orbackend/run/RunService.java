@@ -94,7 +94,7 @@ public class RunService {
     }
 
     public JsonTimestamp getFirstTimestamp(int userId) {
-        Optional<Track> first = this.tracksRepository.findFirstByOrderByTimestampDesc();
+        Optional<Track> first = this.tracksRepository.findFirstByOrderByTimestampAsc();
         if (first.isPresent()) {
             return new JsonTimestamp(first.get().getTimestamp());
         } else {

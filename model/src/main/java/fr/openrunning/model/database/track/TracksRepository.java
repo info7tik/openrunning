@@ -17,5 +17,5 @@ public interface TracksRepository extends CrudRepository<Track, TimestampUserPri
 
     List<Track> findByFilename(String filename);
 
-    Optional<Track> findFirstByOrderByTimestampDesc();
+    Optional<Track> findFirstByOrderByTimestampAsc();
 }
