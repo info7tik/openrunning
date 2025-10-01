@@ -33,7 +33,7 @@ public class TokenCheckerFilter implements HandlerInterceptor {
                 if (token != null) {
                     String[] tokenValue = token.split(" ");
                     if (tokenValue.length == 2) {
-                        logger.info("retrieved token: " + token);
+                        logger.info("successfully retrieved token: validating token...");
                         service.checkToken(tokenValue[1]);
                         isAuthenticated = true;
                     }
